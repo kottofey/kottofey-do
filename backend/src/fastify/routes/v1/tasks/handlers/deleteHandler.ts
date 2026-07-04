@@ -1,0 +1,18 @@
+import { FastifyReply, FastifyRequest } from 'fastify';
+
+import { type CommonQuery } from '@/fastify/types';
+import { getIdFromParams } from '@/fastify/helpers';
+import { TaskModel } from '@/sequelize/models';
+
+export async function deleteHandler(
+  request: FastifyRequest<{ Querystring: CommonQuery }>,
+  reply: FastifyReply,
+): Promise<FastifyReply> {
+  const id = getIdFromParams(request);
+
+  await TaskModel.destroy({ where: { id } });
+
+  return reply.status(200).send({
+    message: `Deleted task id ${id.toString()}`,
+  });
+}

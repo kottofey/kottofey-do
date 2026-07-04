@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    "allowJs": false,
+    "skipLibCheck": true,
+    "strict": true,
+    "strictNullChecks": true,
+    //    "allowImportingTsExtensions": true,
+    //    "noEmit": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    "rootDir": ".",
+    "outDir": "./dist",
+    "strictPropertyInitialization": false,
+    "paths": {
+      "@/helpers": ["./src/helpers"],
+      "@/fastify/*": ["./src/fastify/*"],
+      "@/fastify": ["./src/fastify"],
+      "@/sequelize": ["./src/sequelize"],
+      "@/sequelize/*": ["./src/sequelize/*"],
+      "@/tools": ["./src/tools"],
+      "@/lib": ["./src/lib"],
+      "@/lib/*": ["./src/lib/*"]
+    }
+  },
+  "include": ["src/**/*", "eslint.config.ts"]
+}

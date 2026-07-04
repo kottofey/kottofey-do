@@ -1,0 +1,1 @@
+export { routesMap } from './routesMap';

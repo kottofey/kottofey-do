@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "kottofey-do",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

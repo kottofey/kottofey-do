@@ -1,0 +1,25 @@
+meta {
+  name: Get All
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{BASE_URL}}/project-members?includes[]=UserDetails&includes[]=ProjectDetails
+  body: none
+  auth: none
+}
+
+params:query {
+  includes[]: UserDetails
+  includes[]: ProjectDetails
+  ~scopes[byUser]: 1
+  ~scopes[byProject]: 4
+  ~limit: 5
+  ~page: 4
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

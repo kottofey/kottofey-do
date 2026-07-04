@@ -1,0 +1,24 @@
+meta {
+  name: Get All
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{BASE_URL}}/users
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~includes[]: Projects:Members
+  ~includes[]: Tasks
+  ~scopes[byOwner]: 2
+  ~limit: 5
+  ~page: 4
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

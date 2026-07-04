@@ -1,0 +1,20 @@
+meta {
+  name: Get By ID
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{BASE_URL}}/project-members/1?includes[]=Projects,Users
+  body: none
+  auth: inherit
+}
+
+params:query {
+  includes[]: Projects,Users
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

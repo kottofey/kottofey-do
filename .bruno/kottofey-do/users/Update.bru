@@ -1,0 +1,23 @@
+meta {
+  name: Update
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{BASE_URL}}/users/49
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "New@User.upd",
+    "password": "qweqwrgdre"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

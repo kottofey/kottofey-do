@@ -1,0 +1,1 @@
+export { byOwner } from './byOwner';
