@@ -1,0 +1,23 @@
+meta {
+  name: Login User
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{BASE_URL}}/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "user@todo.com",
+    "password": "password123"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
