@@ -17,7 +17,8 @@ export const projectMembersController: RouteController = {
   getAll: {
     handler: getAllHandler,
     schema: projectMemberSchema.getAll,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['project-member:read'],
   },
 
   // -----------------------------------------------------------------------------
@@ -26,7 +27,8 @@ export const projectMembersController: RouteController = {
   getById: {
     handler: getByIdHandler,
     schema: projectMemberSchema.getById,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['project-member:read'],
   },
 
   // -----------------------------------------------------------------------------
@@ -35,7 +37,8 @@ export const projectMembersController: RouteController = {
   create: {
     handler: createHandler,
     schema: projectMemberSchema.create,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['project-member:create'],
   },
 
   // -----------------------------------------------------------------------------
@@ -44,7 +47,8 @@ export const projectMembersController: RouteController = {
   update: {
     handler: updateHandler,
     schema: projectMemberSchema.update,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['project-member:update'],
   },
 
   // -----------------------------------------------------------------------------
@@ -53,7 +57,8 @@ export const projectMembersController: RouteController = {
   delete: {
     handler: deleteHandler,
     schema: projectMemberSchema.delete,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['project-member:delete'],
   },
 
   // -----------------------------------------------------------------------------
@@ -62,6 +67,7 @@ export const projectMembersController: RouteController = {
   restore: {
     handler: restoreHandler,
     schema: projectMemberSchema.restore,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['project-member:restore'],
   },
 };

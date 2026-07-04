@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import ms, { type StringValue } from 'ms';
 
 import { UserModel, RefreshTokenModel } from '@/sequelize/models';
-import { fastify } from '@/fastify';
 
 export async function loginHandler(
   request: FastifyRequest,
@@ -35,9 +34,6 @@ export async function loginHandler(
 
   // С юзером все в порядке, логинимся дальше
 
-  const tokenExpiresIn = ms(process.env.JWT_EXPIRES_IN as StringValue);
-  const refreshExpiresIn = ms(process.env.JWT_REFRESH_EXPIRES_IN as StringValue);
-
   const payload = {
     id: user.id,
     email: user.email,
@@ -51,6 +47,8 @@ export async function loginHandler(
   const refreshToken = await reply.jwtSign(payload, {
     expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
   });
+
+  const refreshExpiresIn = ms(process.env.JWT_REFRESH_EXPIRES_IN as StringValue);
 
   await RefreshTokenModel.create({
     token: refreshToken,

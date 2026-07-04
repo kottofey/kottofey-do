@@ -5,6 +5,7 @@ import { FastifyJwtNamespace } from '@fastify/jwt';
 declare module 'fastify' {
   interface FastifyContextConfig {
     allowedRoles?: string[];
+    requiredPermissions?: string[];
   }
 
   interface FastifyRequest {

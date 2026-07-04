@@ -17,7 +17,8 @@ export const usersController: RouteController = {
   getAll: {
     handler: getAllHandler,
     schema: userSchema.getAll,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['user:read'],
   },
 
   // -----------------------------------------------------------------------------
@@ -26,7 +27,8 @@ export const usersController: RouteController = {
   getById: {
     handler: getByIdHandler,
     schema: userSchema.getById,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['user:read'],
   },
 
   // -----------------------------------------------------------------------------
@@ -35,7 +37,8 @@ export const usersController: RouteController = {
   create: {
     handler: createHandler,
     schema: userSchema.create,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['user:create'],
   },
 
   // -----------------------------------------------------------------------------
@@ -44,7 +47,8 @@ export const usersController: RouteController = {
   update: {
     handler: updateHandler,
     schema: userSchema.update,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['user:update'],
   },
 
   // -----------------------------------------------------------------------------
@@ -53,7 +57,8 @@ export const usersController: RouteController = {
   delete: {
     handler: deleteHandler,
     schema: userSchema.delete,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['user:delete'],
   },
 
   // -----------------------------------------------------------------------------
@@ -62,6 +67,7 @@ export const usersController: RouteController = {
   restore: {
     handler: restoreHandler,
     schema: userSchema.restore,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['user:restore'],
   },
 };

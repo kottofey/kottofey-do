@@ -17,7 +17,8 @@ export const tasksController: RouteController = {
   getAll: {
     handler: getAllHandler,
     schema: taskSchema.getAll,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['task:read'],
   },
 
   // -----------------------------------------------------------------------------
@@ -26,7 +27,8 @@ export const tasksController: RouteController = {
   getById: {
     handler: getByIdHandler,
     schema: taskSchema.getById,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['task:read'],
   },
 
   // -----------------------------------------------------------------------------
@@ -35,7 +37,8 @@ export const tasksController: RouteController = {
   create: {
     handler: createHandler,
     schema: taskSchema.create,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['task:create'],
   },
 
   // -----------------------------------------------------------------------------
@@ -44,7 +47,8 @@ export const tasksController: RouteController = {
   update: {
     handler: updateHandler,
     schema: taskSchema.update,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['task:update'],
   },
 
   // -----------------------------------------------------------------------------
@@ -53,7 +57,8 @@ export const tasksController: RouteController = {
   delete: {
     handler: deleteHandler,
     schema: taskSchema.delete,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['task:delete'],
   },
 
   // -----------------------------------------------------------------------------
@@ -62,6 +67,7 @@ export const tasksController: RouteController = {
   restore: {
     handler: restoreHandler,
     schema: taskSchema.restore,
-    allowedRoles: ['admin', 'user'],
+    allowedRoles: ['admin'],
+    requiredPermissions: ['task:restore'],
   },
 };

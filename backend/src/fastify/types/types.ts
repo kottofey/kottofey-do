@@ -8,7 +8,8 @@ export type AllCrudMethods = Readonly<
   'getAll' | 'getById' | 'delete' | 'restore' | 'create' | 'update'
 >;
 
-export type AuthType = Readonly<'me' | 'login' | 'logout' | 'refresh'>;
+type Action = 'create' | 'read' | 'update' | 'delete' | 'restore';
+type Permission = `${string}:${Action}`;
 
 export interface User {
   id: number;
@@ -23,6 +24,7 @@ export interface RouteControllerConfig {
   ) => Promise<FastifyReply>;
   schema: RequiredFields<FastifySchema, 'response'>;
   allowedRoles: UserRole[];
+  requiredPermissions: Permission[];
 }
 
 export interface RouteController {
@@ -36,7 +38,6 @@ export interface RouteController {
   me?: RouteControllerConfig;
   login?: RouteControllerConfig;
   logout?: RouteControllerConfig;
-  refresh?: RouteControllerConfig;
 }
 
 export interface CommonQuery {

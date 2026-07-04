@@ -18,18 +18,20 @@ export function registerCRUDRoute(controller: RouteController, routeName: string
         schema: config.schema,
         config: {
           allowedRoles: config.allowedRoles,
+          requiredPermissions: config.requiredPermissions,
         },
       };
 
       switch (crudMethod) {
         case 'getAll':
-          fastify
-            .withTypeProvider<ZodTypeProvider>()
-            .get<{ Querystring: CommonQuery }>(
-              `/${routeName}`,
-              { ...opts, onRequest: [fastify.authenticate, fastify.checkPermissions] },
-              config.handler,
-            );
+          fastify.withTypeProvider<ZodTypeProvider>().get<{ Querystring: CommonQuery }>(
+            `/${routeName}`,
+            {
+              ...opts,
+              onRequest: [fastify.authenticate, fastify.checkPermissions],
+            },
+            config.handler,
+          );
           break;
         case 'getById':
           fastify

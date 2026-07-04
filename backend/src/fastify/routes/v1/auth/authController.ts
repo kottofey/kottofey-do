@@ -10,18 +10,21 @@ export const authController: RouteController = {
   me: {
     handler: meHandler,
     schema: authSchema.me,
-    allowedRoles: ['admin', 'user', 'guest'],
+    allowedRoles: ['any'],
+    requiredPermissions: [],
   },
 
   login: {
     handler: loginHandler,
     schema: authSchema.login,
-    allowedRoles: ['admin', 'user', 'guest'],
+    allowedRoles: ['any'],
+    requiredPermissions: [],
   },
 
   logout: {
     handler: logoutHandler,
     schema: authSchema.logout,
-    allowedRoles: ['admin', 'user', 'guest'],
+    allowedRoles: ['any'],
+    requiredPermissions: [],
   },
 };

@@ -1,11 +1,15 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { fastify } from '@/fastify';
+import { RoleModel, PermissionModel } from '@/sequelize/models';
 
 export async function checkPersimmionDecorator(request: FastifyRequest, reply: FastifyReply) {
-  const allowedRoles = request.routeOptions.config.allowedRoles;
+  const { allowedRoles, requiredPermissions } = request.routeOptions.config as {
+    allowedRoles?: string[];
+    requiredPermissions?: string[];
+  };
 
-  fastify.log.info('Checking permissions');
+  fastify.log.info({ allowedRoles, requiredPermissions }, 'Checking permissions');
 
   if (!allowedRoles || allowedRoles.includes('any')) {
     return;
@@ -15,14 +19,41 @@ export async function checkPersimmionDecorator(request: FastifyRequest, reply: F
 
   const userRoles = request.user.roles;
 
+  // Admin has all permissions
   if (userRoles.includes('admin')) {
     return;
   }
 
-  const hasRole = allowedRoles.some(role => userRoles.includes(role));
+  // 1. Если указаны требуемые права, проверяем их в первую очередь
+  if (requiredPermissions && requiredPermissions.length > 0) {
+    const rolesWithPermissions = await RoleModel.findAll({
+      where: { name: userRoles },
+      include: [
+        {
+          model: PermissionModel,
+          where: { name: requiredPermissions },
+          required: true,
+        },
+      ],
+    });
 
-  if (!hasRole) {
-    fastify.log.warn({ allowedRoles, userRoles }, 'Permission denied');
+    // Если найдены роли пользователя, обладающие требуемыми правами
+    if (rolesWithPermissions.length > 0) {
+      return;
+    }
+
+    // Если права были указаны, но не найдены у пользователя — доступ запрещен,
+    // даже если роль совпадает с allowedRoles (строгая проверка прав)
+    fastify.log.warn({ requiredPermissions, userRoles }, 'Permission denied: missing required permissions');
     return reply.status(403).send({ message: 'Forbidden: Insufficient permissions' });
   }
+
+  // 2. Если прав не требуется, проверяем только роли
+  const hasRole = allowedRoles.some(role => userRoles.includes(role));
+  if (hasRole) {
+    return;
+  }
+
+  fastify.log.warn({ allowedRoles, requiredPermissions, userRoles }, 'Permission denied');
+  return reply.status(403).send({ message: 'Forbidden: Insufficient permissions' });
 }
