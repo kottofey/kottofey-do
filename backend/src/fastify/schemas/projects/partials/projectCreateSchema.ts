@@ -5,7 +5,7 @@ import { projectBaseSchema } from '@/fastify/schemas';
 export const projectCreateSchema = projectBaseSchema
   .omit({
     id: true,
-
+    owner_id: true,
     tasks: true,
   })
   .extend({
