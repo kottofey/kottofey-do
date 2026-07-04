@@ -10,7 +10,7 @@ export async function restoreHandler(
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
 
-  await TaskModel.restore({ where: { id } });
+  await TaskModel.restore({ where: { id, owner_id: request.user.id } });
 
   return reply.status(200).send({
     message: `Restored task id ${id.toString()}`,

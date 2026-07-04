@@ -10,7 +10,12 @@ export async function deleteHandler(
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
 
-  await ProjectModel.destroy({ where: { id } });
+  await ProjectModel.destroy({
+    where: {
+      id,
+      owner_id: request.user.id,
+    },
+  });
 
   return reply.status(200).send({
     message: `Deleted Project id ${id.toString()}`,

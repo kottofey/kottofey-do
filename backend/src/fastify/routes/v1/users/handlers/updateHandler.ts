@@ -13,6 +13,13 @@ export async function updateHandler(
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
 
+  const {
+    user: { roles },
+  } = request;
+
+  const isAdmin = roles.some(r => r === 'admin');
+  const isAllowedToUpdate = isAdmin || id === request.user.id;
+
   const user = await UserModel.findOne({
     where: { id },
     attributes: {
@@ -20,7 +27,7 @@ export async function updateHandler(
     },
   });
 
-  if (!user) {
+  if (!user || !isAllowedToUpdate) {
     return reply.status(404).send({
       message: `User id ${id.toString()} was not found`,
     });

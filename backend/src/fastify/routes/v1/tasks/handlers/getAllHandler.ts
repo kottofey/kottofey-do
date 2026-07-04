@@ -1,4 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import chalk from 'chalk';
 
 import type { CommonQuery } from '@/fastify/types';
 import { TaskModel } from '@/sequelize/models';
@@ -11,7 +12,10 @@ export async function getAllHandler(
 ): Promise<FastifyReply> {
   const {
     query: { page = 1, limit = 10, scopes },
+    user: { roles },
   } = request;
+
+  const isAdmin = roles.some(r => r === 'admin');
 
   const offset = (page - 1) * limit;
 
@@ -22,6 +26,11 @@ export async function getAllHandler(
     limit,
     offset,
     distinct: true,
+    where: !isAdmin
+      ? {
+          owner_id: request.user.id,
+        }
+      : {},
   });
 
   return reply.status(200).send({

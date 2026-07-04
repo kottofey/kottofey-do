@@ -13,7 +13,10 @@ export async function updateHandler(
   const id = getIdFromParams(request);
 
   const [count] = await ProjectModel.update(request.body as z.infer<typeof projectUpdateSchema>, {
-    where: { id },
+    where: {
+      id,
+      owner_id: request.user.id,
+    },
   });
 
   if (count === 0) {

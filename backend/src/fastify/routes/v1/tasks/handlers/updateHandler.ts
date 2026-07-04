@@ -13,7 +13,7 @@ export async function updateHandler(
   const id = getIdFromParams(request);
 
   const [count] = await TaskModel.update(request.body as z.infer<typeof taskUpdateSchema>, {
-    where: { id },
+    where: { id, owner_id: request.user.id },
   });
 
   if (count === 0) {

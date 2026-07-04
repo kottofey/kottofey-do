@@ -5,6 +5,7 @@ import { taskBaseSchema } from './taskBaseSchema';
 export const taskCreateSchema = taskBaseSchema
   .omit({
     id: true,
+    owner_id: true,
   })
   .extend({
     priority: taskBaseSchema.shape.priority.default('normal'),

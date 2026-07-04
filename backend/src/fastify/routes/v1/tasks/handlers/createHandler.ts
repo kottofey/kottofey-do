@@ -9,7 +9,12 @@ export async function createHandler(
   request: FastifyRequest<{ Querystring: CommonQuery; Body: unknown }>,
   reply: FastifyReply,
 ): Promise<FastifyReply> {
-  const createdTask = await TaskModel.create(request.body as z.infer<typeof taskCreateSchema>);
+  const newTask = request.body as z.infer<typeof taskCreateSchema>;
+
+  const createdTask = await TaskModel.create({
+    ...newTask,
+    owner_id: request.user.id,
+  });
 
   return reply.status(201).send(createdTask);
 }

@@ -12,7 +12,7 @@ export async function getByIdHandler(
 
   const project = await ProjectModel.findOne({
     include: parseIncludes(request),
-    where: { id },
+    where: { id, owner_id: request.user.id },
   });
 
   if (!project) {

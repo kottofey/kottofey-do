@@ -189,6 +189,7 @@ const rolePermissions = [
   { role_id: 2, permission_id: 9, created_at: new Date(), updated_at: new Date() }, // project:delete
   { role_id: 2, permission_id: 10, created_at: new Date(), updated_at: new Date() }, // project:restore
   { role_id: 2, permission_id: 11, created_at: new Date(), updated_at: new Date() }, // user:read
+  { role_id: 2, permission_id: 13, created_at: new Date(), updated_at: new Date() }, // user:update - только себя
   { role_id: 2, permission_id: 16, created_at: new Date(), updated_at: new Date() }, // project-member:create
   { role_id: 2, permission_id: 17, created_at: new Date(), updated_at: new Date() }, // project-member:read
   { role_id: 2, permission_id: 18, created_at: new Date(), updated_at: new Date() }, // project-member:update

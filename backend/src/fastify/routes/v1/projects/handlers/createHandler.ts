@@ -9,9 +9,12 @@ export async function createHandler(
   request: FastifyRequest<{ Querystring: CommonQuery; Body: unknown }>,
   reply: FastifyReply,
 ): Promise<FastifyReply> {
-  const createdProject = await ProjectModel.create(
-    request.body as z.infer<typeof projectCreateSchema>,
-  );
+  const newProject = request.body as z.infer<typeof projectCreateSchema>;
+
+  const createdProject = await ProjectModel.create({
+    ...newProject,
+    owner_id: request.user.id,
+  });
 
   return reply.status(201).send(createdProject);
 }

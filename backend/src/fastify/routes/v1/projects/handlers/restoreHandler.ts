@@ -10,7 +10,12 @@ export async function restoreHandler(
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
 
-  await ProjectModel.restore({ where: { id } });
+  await ProjectModel.restore({
+    where: {
+      id,
+      owner_id: request.user.id,
+    },
+  });
 
   return reply.status(200).send({
     message: `Restored Project id ${id.toString()}`,

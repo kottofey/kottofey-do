@@ -47,7 +47,7 @@ export const usersController: RouteController = {
   update: {
     handler: updateHandler,
     schema: userSchema.update,
-    allowedRoles: ['admin'],
+    allowedRoles: ['admin', 'user'],
     requiredPermissions: ['user:update'],
   },
 
