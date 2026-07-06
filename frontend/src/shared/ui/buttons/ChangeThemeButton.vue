@@ -1,0 +1,65 @@
+<script setup lang="ts">
+import { NButton, NIcon } from 'naive-ui';
+
+import { SunIcon } from '@/shared/ui/icons';
+
+// import { useSettings } from '@/app/lib';
+
+// const { settings } = useSettings();
+
+const { iconSize = 24 } = defineProps<{
+  iconSize?: number;
+}>();
+// -----------------------------------------------------------------------------
+// Actions
+// -----------------------------------------------------------------------------
+// const changeTheme = () => {
+//   if (settings.value.theme === 'light') {
+//     settings.value.theme = 'dark';
+//   } else if (settings.value.theme === 'dark') {
+//     settings.value.theme = 'light';
+//   }
+// };
+</script>
+
+<template>
+  <NButton
+    class="btn-theme"
+    round
+    :style="{
+      '--theme-btn-size': `${iconSize ? iconSize : 24}px`,
+    }"
+  >
+    <template #icon>
+      <NIcon :size="iconSize">
+        <SunIcon />
+        <!--        <MoonIcon v-else /> -->
+      </NIcon>
+    </template>
+  </NButton>
+  <!--  <NButton-->
+  <!--    class="btn-theme"-->
+  <!--    round-->
+  <!--    :style="{-->
+  <!--      '&#45;&#45;theme-btn-size': `${iconSize ? iconSize : 24}px`,-->
+  <!--    }"-->
+  <!--    @click="changeTheme"-->
+  <!--  >-->
+  <!--    <template #icon>-->
+  <!--      <NIcon :size="iconSize">-->
+  <!--        <SunIcon v-if="settings.theme === 'light'" />-->
+  <!--        <MoonIcon v-else /> </NIcon-->
+  <!--    ></template>-->
+  <!--  </NButton>-->
+</template>
+
+<style scoped lang="scss">
+@use '@/app/styles/constants' as *;
+
+.btn-theme {
+  min-height: var(--theme-btn-size);
+  min-width: var(--theme-btn-size);
+  padding: 20px;
+  color: $color-accent;
+}
+</style>

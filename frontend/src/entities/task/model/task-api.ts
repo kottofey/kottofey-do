@@ -1,0 +1,91 @@
+import { useApi, httpMethod, serializeQuery } from '@/shared/api';
+
+// TODO дописать скоупы если будут
+// TODO написать алгоритм сериализации с проверкой через zod
+export interface ITask {
+  id: number;
+
+  // surname: string;
+  // firstname: string;
+  // patronymic: string;
+
+  email: string;
+
+  roles: string[];
+
+  deleted_at: number;
+}
+
+export type ITaskScopes = {
+  'tasks:byIds'?: number[];
+  'tasks:byOwner'?: number;
+  'tasks:byProject'?: number;
+  'tasks:byStatus'?: boolean;
+  'tasks:onlyArchived'?: boolean;
+};
+export type ITaskIncludes = Array<''>;
+
+export async function getAllTasks({
+  scopes,
+  includes = [],
+}: {
+  scopes?: ITaskScopes;
+  includes?: ITaskIncludes;
+}): Promise<ITask[] | undefined> {
+  return await useApi<ITask[]>({
+    route: 'tasks',
+    method: httpMethod.GET,
+    query: serializeQuery({ scopes, includes }),
+  });
+}
+
+export async function getTask({
+  id,
+}: {
+  id: number;
+}): Promise<ITask | undefined> {
+  return await useApi<ITask>({
+    route: `tasks/${id}`,
+    method: httpMethod.GET,
+  });
+}
+
+export async function createTask({
+  task,
+}: {
+  task: Partial<ITask>;
+}): Promise<ITask | undefined> {
+  return await useApi<ITask>({
+    route: `tasks`,
+    method: httpMethod.POST,
+    body: JSON.stringify(task),
+  });
+}
+
+export async function deleteTask({ id }: { id: number }): Promise<void> {
+  return await useApi({
+    route: `tasks/${id}`,
+    method: httpMethod.DELETE,
+  });
+}
+
+export async function restoreTask({ id }: { id: number }): Promise<void> {
+  return await useApi({
+    route: `tasks/${id}/restore`,
+    method: httpMethod.PUT,
+  });
+}
+
+export async function editTask({
+  id,
+  updatedTask,
+}: {
+  id: number;
+  updatedTask: Partial<ITask>;
+}): Promise<ITask | undefined> {
+  return await useApi<ITask>({
+    route: `tasks/${id}`,
+    method: httpMethod.PUT,
+    body: JSON.stringify(updatedTask),
+  });
+}

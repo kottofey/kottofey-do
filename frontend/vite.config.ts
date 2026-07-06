@@ -1,0 +1,62 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+
+import { defineConfig, type PluginOption, ServerOptions } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
+
+// https://vite.dev/config/
+export default defineConfig(async ({ command }) => {
+  const plugins: PluginOption[] = [vue({}), vueJsx()];
+  let server: ServerOptions = {};
+
+  if (command === 'serve') {
+    const vueDevTools = await import('vite-plugin-vue-devtools').then(
+      (m) => m.default,
+    );
+
+    plugins.push(vueDevTools({ launchEditor: 'webstorm' }));
+
+    server = {
+      host: 'do.kottofey.ru',
+      https: {
+        key: readFileSync('../.ssl/do.kottofey.ru/privkey.pem'),
+        cert: readFileSync('../.ssl/do.kottofey.ru/fullchain.pem'),
+      },
+      port: 5173,
+      strictPort: true,
+      proxy: {
+        '/api/v1': {
+          target: 'http://localhost:9999',
+          changeOrigin: true,
+          rewrite: (path: string) => path.replace(/^\/api\/v1/, ''),
+        },
+      },
+    };
+  }
+
+  return {
+    envDir: './src/app/env',
+    publicDir: './public',
+    server,
+    build: {
+      emptyOutDir: true,
+      outDir: './dist',
+      target: 'esnext',
+      sourcemap: command === 'serve',
+      rollupOptions: {
+        output: {
+          manualChunks(id: string) {
+            if (id.includes('/shared/store/')) {
+              return 'stores';
+            }
+          },
+        },
+      },
+    },
+    plugins,
+    resolve: {
+      alias: { '@': path.resolve(__dirname, './src') },
+    },
+  };
+});
