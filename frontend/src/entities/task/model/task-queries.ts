@@ -84,11 +84,6 @@ export const useCreateTaskMutation = () => {
     mutationFn: ({ task }: { task: Partial<ITask> }) => createTask({ task }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
-      notification.success({
-        content: 'Создано',
-        closable: true,
-        duration: 5000,
-      });
     },
     onError: (error: Error) => {
       notification.error({
@@ -142,11 +137,11 @@ export const useDeleteTaskMutation = () => {
       await queryClient.invalidateQueries({
         queryKey: taskKeys.detail(variables.id),
       });
-      notification.success({
-        content: 'Удалено',
-        closable: true,
-        duration: 5000,
-      });
+      // notification.success({
+      //   content: 'Удалено',
+      //   closable: true,
+      //   duration: 5000,
+      // });
     },
     onError: (error: Error) => {
       notification.error({
@@ -168,11 +163,11 @@ export const useRestoreTaskMutation = () => {
       await queryClient.invalidateQueries({
         queryKey: taskKeys.detail(variables.id),
       });
-      notification.success({
-        content: 'Восстановлено',
-        closable: true,
-        duration: 5000,
-      });
+      // notification.success({
+      //   content: 'Восстановлено',
+      //   closable: true,
+      //   duration: 5000,
+      // });
     },
     onError: (error: Error) => {
       notification.error({

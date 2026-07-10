@@ -2,7 +2,7 @@ import { ScopeHandler } from '@/sequelize/types';
 
 export const TASK_SCOPE_HANDLERS = {
   // SimpleScope: () => ({ method: ['SimpleScope'] }),
-  byIds: (rawIds: unknown) => {
+  'tasks:byIds': (rawIds: unknown) => {
     let ids: number[];
 
     if (typeof rawIds === 'string') {
@@ -16,10 +16,10 @@ export const TASK_SCOPE_HANDLERS = {
     if (isNaN(ids[0])) throw Error('Неверный формат в скоупе byIds. Разделитель запятая.');
 
     return {
-      method: ['byIds', ids],
+      method: ['tasks:byIds', ids],
     };
   },
-  byStatus: (statusRaw: unknown) => {
+  'tasks:byStatus': (statusRaw: unknown) => {
     let status = false;
 
     if (statusRaw === '1') {
@@ -31,20 +31,22 @@ export const TASK_SCOPE_HANDLERS = {
     }
 
     return {
-      method: ['byStatus', status],
+      method: ['tasks:byStatus', status],
     };
   },
-  onlyArchived: () => ({ method: ['onlyArchived'] }),
-  byOwner: (ownerId: unknown) => {
+  'tasks:onlyArchived': () => ({ method: ['tasks:onlyArchived'] }),
+  'tasks:onlyDeleted': () => ({ method: ['tasks:onlyDeleted'] }),
+  'tasks:noArchived': () => ({ method: ['tasks:noArchived'] }),
+  'tasks:byOwner': (ownerId: unknown) => {
     if (isNaN(Number(ownerId))) throw Error('ownerId должен быть числом.');
     return {
-      method: ['byOwner', Number(ownerId)],
+      method: ['tasks:byOwner', Number(ownerId)],
     };
   },
-  byProject: (project_id: unknown) => {
+  'tasks:byProject': (project_id: unknown) => {
     if (isNaN(Number(project_id))) throw Error('project_id должен быть числом.');
     return {
-      method: ['byProject', Number(project_id)],
+      method: ['tasks:byProject', Number(project_id)],
     };
   },
 } as const satisfies Record<string, ScopeHandler>;

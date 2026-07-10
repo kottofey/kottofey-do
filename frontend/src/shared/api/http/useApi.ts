@@ -53,7 +53,7 @@ export default async function useApi<T>({
       const authStore = useAuthStore();
       authStore.deleteUser();
 
-      router.push({ name: 'login.show' });
+      router.replace({ name: 'login.show' });
     }
 
     return;

@@ -1,5 +1,4 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import chalk from 'chalk';
 
 import type { CommonQuery } from '@/fastify/types';
 import { TaskModel } from '@/sequelize/models';

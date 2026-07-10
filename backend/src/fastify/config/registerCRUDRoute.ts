@@ -64,7 +64,7 @@ export function registerCRUDRoute(controller: RouteController, routeName: string
             );
           break;
         case 'restore':
-          fastify.withTypeProvider<ZodTypeProvider>().post<{
+          fastify.withTypeProvider<ZodTypeProvider>().put<{
             Querystring: CommonQuery;
           }>(`/${routeName}/:id/restore`, { ...opts, onRequest: [fastify.authenticate, fastify.checkPermissions] }, config.handler);
           break;

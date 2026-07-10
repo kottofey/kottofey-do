@@ -9,8 +9,15 @@ export async function deleteHandler(
   reply: FastifyReply,
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
+  const {
+    user: { roles },
+  } = request;
 
-  await TaskModel.destroy({ where: { id, owner_id: request.user.id } });
+  const isAdmin = roles.some(r => r === 'admin');
+
+  await TaskModel.destroy({
+    where: isAdmin ? { id } : { id, owner_id: request.user.id },
+  });
 
   return reply.status(200).send({
     message: `Deleted task id ${id.toString()}`,
