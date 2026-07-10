@@ -9,3 +9,5 @@ export { default as LogoutIcon } from './LogoutIcon.vue';
 export { default as ShieldIcon } from './ShieldIcon.vue';
 export { default as EyeIcon } from './EyeIcon.vue';
 export { default as PersonIcon } from './PersonIcon.vue';
+export { default as ArchiveIcon } from './ArchiveIcon.vue';
+export { default as UnarchiveIcon } from './UnarchiveIcon.vue';

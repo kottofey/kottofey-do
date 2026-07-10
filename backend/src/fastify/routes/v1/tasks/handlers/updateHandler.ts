@@ -11,9 +11,14 @@ export async function updateHandler(
   reply: FastifyReply,
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
+  const {
+    user: { roles },
+  } = request;
+
+  const isAdmin = roles.some(r => r === 'admin');
 
   const [count] = await TaskModel.update(request.body as z.infer<typeof taskUpdateSchema>, {
-    where: { id, owner_id: request.user.id },
+    where: isAdmin ? { id } : { id, owner_id: request.user.id },
   });
 
   if (count === 0) {

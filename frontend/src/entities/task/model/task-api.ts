@@ -1,18 +1,24 @@
 import { useApi, httpMethod, serializeQuery } from '@/shared/api';
+import type { IUser } from '@/entities/user';
+import type { IMeta } from '@/shared/types';
 
 // TODO дописать скоупы если будут
 // TODO написать алгоритм сериализации с проверкой через zod
 export interface ITask {
   id: number;
+  project_id: number;
+  owner_id: number;
+  title: string;
+  priority: 'high' | 'normal' | 'low';
+  sort_order: number;
+  is_done: boolean;
+  is_archived: boolean;
 
-  // surname: string;
-  // firstname: string;
-  // patronymic: string;
+  project: object;
+  owner: Partial<IUser>;
 
-  email: string;
-
-  roles: string[];
-
+  created_at: number;
+  updated_at: number;
   deleted_at: number;
 }
 
@@ -23,7 +29,7 @@ export type ITaskScopes = {
   'tasks:byStatus'?: boolean;
   'tasks:onlyArchived'?: boolean;
 };
-export type ITaskIncludes = Array<''>;
+export type ITaskIncludes = Array<'Owner' | 'Project'>;
 
 export async function getAllTasks({
   scopes,
@@ -31,8 +37,8 @@ export async function getAllTasks({
 }: {
   scopes?: ITaskScopes;
   includes?: ITaskIncludes;
-}): Promise<ITask[] | undefined> {
-  return await useApi<ITask[]>({
+}): Promise<undefined | { meta: IMeta; data: ITask[] }> {
+  return await useApi<{ meta: IMeta; data: ITask[] }>({
     route: 'tasks',
     method: httpMethod.GET,
     query: serializeQuery({ scopes, includes }),

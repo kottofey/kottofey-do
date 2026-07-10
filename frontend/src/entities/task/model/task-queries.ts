@@ -116,11 +116,11 @@ export const useEditTaskMutation = () => {
       await queryClient.invalidateQueries({
         queryKey: taskKeys.detail(variables.id),
       });
-      notification.success({
-        content: 'Отредактировано',
-        closable: true,
-        duration: 5000,
-      });
+      // notification.success({
+      //   content: 'Отредактировано',
+      //   closable: true,
+      //   duration: 5000,
+      // });
     },
     onError: (error: Error) => {
       notification.error({
