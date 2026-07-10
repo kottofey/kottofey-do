@@ -12,7 +12,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  if (useAuthStore().user && to.name === 'login.show') {
+  if (to.name === 'login.show' && useAuthStore().user) {
     return { name: 'home.show' };
   }
 
