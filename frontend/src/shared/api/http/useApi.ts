@@ -45,15 +45,15 @@ export default async function useApi<T>({
 
     notification.error({
       content: err_response.message,
-      duration: 5000,
+      duration: 1500,
       closable: true,
     });
 
     if (resp.status === 401) {
-            const authStore = useAuthStore();
-      authStore.deleteUser(); 
+      const authStore = useAuthStore();
+      authStore.deleteUser();
 
-      router.push({name: 'login.show'});
+      router.push({ name: 'login.show' });
     }
 
     return;
@@ -64,7 +64,7 @@ export default async function useApi<T>({
   if (json.message) {
     notification.info({
       content: json.message,
-      duration: 5000,
+      duration: 1500,
       closable: true,
     });
   }

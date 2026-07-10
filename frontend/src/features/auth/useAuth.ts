@@ -5,7 +5,6 @@ import type { IUser } from '@/entities/user';
 import { notification } from '@/shared/lib';
 
 export interface IAuthResponse {
-  success: boolean;
   message: string;
   user: Partial<IUser>;
 }
@@ -63,29 +62,23 @@ export default function useAuth() {
     }
   };
 
-  // const clearAuthState = () => {
-  //   authStore.deleteUser();
-  // };
+  const initializeAuthState = async () => {
+    const authStore = useAuthStore();
+    try {
+      const me = await useApi<Partial<IUser>>({
+        route: 'me',
+        method: httpMethod.GET,
+      });
 
-  // const initializeAuthState = async () => {
-  //   const authStore = useAuthStore();
-  //   try {
-  //     const me = await useApi<IAuthResponse>({
-  //       route: 'me',
-  //       method: httpMethod.GET,
-  //     });
-  //
-  //     if (me?.user?.id) {
-  //       authStore.setUser(me.user);
-  //     } else {
-  //       authStore.deleteUser();
-  //     }
-  //   } catch {
-  //     authStore.deleteUser();
-  //   } finally {
-  //     authStore.isAuthInitialized = true;
-  //   }
-  // };
+      if (me) {
+        authStore.setUser(me);
+      } else {
+        authStore.deleteUser();
+      }
+    } catch {
+      authStore.deleteUser();
+    }
+  };
 
-  return { login, logout };
+  return { login, logout, initializeAuthState };
 }
