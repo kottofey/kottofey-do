@@ -13,16 +13,26 @@ import {
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
-import { byIds, byOwner, byStatus, onlyArchived, byProject } from './Scopes';
+import {
+  byIds,
+  byOwner,
+  byStatus,
+  onlyArchived,
+  byProject,
+  noArchived,
+  onlyDeleted,
+} from './Scopes';
 
 import { ProjectModel, UserModel } from '@/sequelize/models';
 
 @Scopes(() => ({
-  byStatus,
-  onlyArchived,
-  byIds,
-  byOwner,
-  byProject,
+  'tasks:byStatus': byStatus,
+  'tasks:onlyArchived': onlyArchived,
+  'tasks:onlyDeleted': onlyDeleted,
+  'tasks:noArchived': noArchived,
+  'tasks:byIds': byIds,
+  'tasks:byOwner': byOwner,
+  'tasks:byProject': byProject,
 }))
 @Table({ paranoid: true, tableName: 'Tasks' })
 export class TaskModel extends Model {
