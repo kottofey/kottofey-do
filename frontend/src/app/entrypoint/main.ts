@@ -7,8 +7,7 @@ import App from './App.vue';
 
 import { router } from '@/app/router';
 import { useAuth } from '@/features/auth';
-
-// import { defaultTanstackQueryOptions } from '@/shared/lib/tanstack';
+import { defaultTanstackQueryOptions } from '@/shared/lib/tanstack';
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -19,7 +18,7 @@ await useAuth().initializeAuthState();
 app.use(router);
 app.use(VueQueryPlugin, {
   enableDevtoolsV6Plugin: true,
-  // ...defaultTanstackQueryOptions,
+  ...defaultTanstackQueryOptions,
 });
 
 app.mount('#app');

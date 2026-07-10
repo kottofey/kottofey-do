@@ -8,22 +8,17 @@ import {
   NNotificationProvider,
 } from 'naive-ui';
 
-// import { useSettings } from '@/app/lib';
+import { useSettings } from '@/app/lib';
 
-// const { settings } = useSettings();
+const { settings } = useSettings();
 </script>
 
 <template>
   <NConfigProvider
     :locale="ruRU"
     :date-locale="dateRuRU"
-    :theme="darkTheme"
+    :theme="settings.theme === 'light' ? null : darkTheme"
   >
-    <!--  <NConfigProvider-->
-    <!--    :locale="ruRU"-->
-    <!--    :date-locale="dateRuRU"-->
-    <!--    :theme="settings.theme === 'light' ? null : darkTheme"-->
-    <!--  >-->
     <NGlobalStyle />
     <NNotificationProvider>
       <RouterView />

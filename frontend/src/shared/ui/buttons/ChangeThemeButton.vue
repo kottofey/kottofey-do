@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { NButton, NIcon } from 'naive-ui';
 
-import { SunIcon } from '@/shared/ui/icons';
+import { MoonIcon, SunIcon } from '@/shared/ui/icons';
+import { useSettings } from '@/app/lib';
 
-// import { useSettings } from '@/app/lib';
-
-// const { settings } = useSettings();
+const { settings } = useSettings();
 
 const { iconSize = 24 } = defineProps<{
   iconSize?: number;
@@ -13,13 +12,13 @@ const { iconSize = 24 } = defineProps<{
 // -----------------------------------------------------------------------------
 // Actions
 // -----------------------------------------------------------------------------
-// const changeTheme = () => {
-//   if (settings.value.theme === 'light') {
-//     settings.value.theme = 'dark';
-//   } else if (settings.value.theme === 'dark') {
-//     settings.value.theme = 'light';
-//   }
-// };
+const changeTheme = () => {
+  if (settings.value.theme === 'light') {
+    settings.value.theme = 'dark';
+  } else if (settings.value.theme === 'dark') {
+    settings.value.theme = 'light';
+  }
+};
 </script>
 
 <template>
@@ -29,28 +28,14 @@ const { iconSize = 24 } = defineProps<{
     :style="{
       '--theme-btn-size': `${iconSize ? iconSize : 24}px`,
     }"
+    @click="changeTheme"
   >
     <template #icon>
       <NIcon :size="iconSize">
-        <SunIcon />
-        <!--        <MoonIcon v-else /> -->
-      </NIcon>
-    </template>
+        <SunIcon v-if="settings.theme === 'light'" />
+        <MoonIcon v-else /> </NIcon
+    ></template>
   </NButton>
-  <!--  <NButton-->
-  <!--    class="btn-theme"-->
-  <!--    round-->
-  <!--    :style="{-->
-  <!--      '&#45;&#45;theme-btn-size': `${iconSize ? iconSize : 24}px`,-->
-  <!--    }"-->
-  <!--    @click="changeTheme"-->
-  <!--  >-->
-  <!--    <template #icon>-->
-  <!--      <NIcon :size="iconSize">-->
-  <!--        <SunIcon v-if="settings.theme === 'light'" />-->
-  <!--        <MoonIcon v-else /> </NIcon-->
-  <!--    ></template>-->
-  <!--  </NButton>-->
 </template>
 
 <style scoped lang="scss">
