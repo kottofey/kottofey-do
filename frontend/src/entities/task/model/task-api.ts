@@ -28,6 +28,8 @@ export type ITaskScopes = {
   'tasks:byProject'?: number;
   'tasks:byStatus'?: boolean;
   'tasks:onlyArchived'?: boolean;
+  'tasks:onlyDeleted'?: boolean;
+  'tasks:noArchived'?: boolean;
 };
 export type ITaskIncludes = Array<'Owner' | 'Project'>;
 

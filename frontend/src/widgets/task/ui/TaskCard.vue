@@ -1,15 +1,27 @@
 <script setup lang="ts">
-import { NButton, NCheckbox, NIcon, NTag } from 'naive-ui';
+import { NButton, NButtonGroup, NCheckbox, NIcon, NTag } from 'naive-ui';
 import dayjs from 'dayjs';
 
-import { ArchiveIcon, UnarchiveIcon } from '@/shared/ui/icons';
-import { type ITask, useEditTaskMutation } from '@/entities/task';
+import {
+  ArchiveIcon,
+  RestoreIcon,
+  TrashIcon,
+  UnarchiveIcon,
+} from '@/shared/ui/icons';
+import {
+  type ITask,
+  useDeleteTaskMutation,
+  useEditTaskMutation,
+  useRestoreTaskMutation,
+} from '@/entities/task';
 
 const { task } = defineProps<{
   task?: ITask;
 }>();
 
 const { mutate: updateTask } = useEditTaskMutation();
+const { mutate: deleteTask } = useDeleteTaskMutation();
+const { mutate: restoreTask } = useRestoreTaskMutation();
 </script>
 
 <template>
@@ -17,7 +29,13 @@ const { mutate: updateTask } = useEditTaskMutation();
     v-if="task"
     class="task-card"
     @click="
-      updateTask({ id: task.id, updatedTask: { is_done: !task.is_done } })
+      updateTask({
+        id: task.id,
+        updatedTask: {
+          is_done: !task.is_done,
+          is_archived: !task.is_done ? true : task.is_archived,
+        },
+      })
     "
   >
     <div class="task-card__header">
@@ -40,24 +58,49 @@ const { mutate: updateTask } = useEditTaskMutation();
         {{ task.project.name }}
       </NTag>
 
-      <NButton
-        :focusable="false"
-        :type="task.is_archived ? 'warning' : 'error'"
-        quaternary
-        @click.stop="
-          updateTask({
-            id: task.id,
-            updatedTask: { is_archived: !task.is_archived },
-          })
-        "
-      >
-        <template #icon>
-          <NIcon size="28">
-            <ArchiveIcon v-if="!task.is_archived" />
-            <UnarchiveIcon v-else />
-          </NIcon>
-        </template>
-      </NButton>
+      <NButtonGroup>
+        <NButton
+          v-if="!task.deleted_at"
+          :focusable="false"
+          type="warning"
+          secondary
+          @click.stop="
+            updateTask({
+              id: task.id,
+              updatedTask: { is_archived: !task.is_archived },
+            })
+          "
+        >
+          <template #icon>
+            <NIcon size="28">
+              <ArchiveIcon v-if="!task.is_archived" />
+              <UnarchiveIcon v-else />
+            </NIcon>
+          </template>
+        </NButton>
+
+        <NButton
+          :focusable="false"
+          :type="task.deleted_at ? 'success' : 'error'"
+          secondary
+          @click.stop="
+            () => {
+              if (!task.deleted_at) {
+                deleteTask({ id: task.id });
+              } else {
+                restoreTask({ id: task.id });
+              }
+            }
+          "
+        >
+          <template #icon>
+            <NIcon size="23">
+              <TrashIcon v-if="!task.deleted_at" />
+              <RestoreIcon v-else />
+            </NIcon>
+          </template>
+        </NButton>
+      </NButtonGroup>
     </div>
 
     <NCheckbox
