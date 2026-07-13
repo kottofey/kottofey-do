@@ -9,7 +9,7 @@
     "BACKEND:dev2": "tsx watch --env-file=.env src/fastify/server.ts",
     "BACKEND:prod": "node --env-file=.env dist/server.js",
     "build": "tsup && tsc-alias",
-    "check-types": "tsc -b --noEmit",
+    "BACKEND:check-types": "tsc -b --noEmit",
     "lint:backend": "eslint --config eslint.config.ts --ext .ts,.js --fix ./src"
   },
   "license": "ISC",

@@ -9,8 +9,8 @@ import {
   getLogger,
   registerCRUDRoute,
   configCookiesAndJwt,
+  routesMap,
 } from '@/fastify/config';
-import { routesMap } from '@/fastify/routes/v1';
 import { sequelize } from '@/sequelize';
 import { authenticateDecorator, checkPersimmionDecorator } from '@/fastify/decorators';
 
@@ -49,7 +49,7 @@ fastify.decorate('checkPermissions', checkPersimmionDecorator);
 // Hooks register
 // -----------------------------------------------------------------------------
 
-// fastify.addHook('onRequest', onRequestHook);
+// fastify.addHook('onRequest', onRequestHook); // Пример-заглушка
 
 // -----------------------------------------------------------------------------
 // Routes register

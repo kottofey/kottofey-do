@@ -29,7 +29,11 @@
       "@/sequelize/*": ["./src/sequelize/*"],
       "@/tools": ["./src/tools"],
       "@/lib": ["./src/lib"],
-      "@/lib/*": ["./src/lib/*"]
+      "@/lib/*": ["./src/lib/*"],
+      "@/shared": ["./src/shared"],
+      "@/shared/*": ["./src/shared/*"],
+      "@/modules": ["./src/modules"],
+      "@/modules/*": ["./src/modules/*"]
     }
   },
   "include": ["src/**/*", "eslint.config.ts"]

@@ -4,9 +4,8 @@ type RequiredFields<T, K extends keyof T> = Required<Pick<T, K>> & Partial<Omit<
 
 export type UserRole = 'admin' | 'user' | 'guest' | 'any';
 
-export type AllCrudMethods = Readonly<
-  'getAll' | 'getById' | 'delete' | 'restore' | 'create' | 'update'
->;
+export type AllCrudMethods = 'getAll' | 'getById' | 'delete' | 'restore' | 'create' | 'update';
+export type AuthMethods = 'me' | 'login' | 'logout';
 
 type Action = 'create' | 'read' | 'update' | 'delete' | 'restore';
 type Permission = `${string}:${Action}`;
@@ -19,7 +18,7 @@ export interface User {
 
 export interface RouteControllerConfig {
   handler: (
-    request: FastifyRequest<{ Querystring: CommonQuery; Body?: unknown }>,
+    request: FastifyRequest<{ Querystring: CommonQuery }>,
     reply: FastifyReply,
   ) => Promise<FastifyReply>;
   schema: RequiredFields<FastifySchema, 'response'>;

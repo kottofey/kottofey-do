@@ -1,7 +1,13 @@
 import { FastifyRequest } from 'fastify';
 import type { IncludeOptions, Includeable } from 'sequelize';
 
-import { ProjectMembersModel, ProjectModel, TaskModel, UserModel } from '@/sequelize/models';
+import {
+  ProjectMembersModel,
+  ProjectModel,
+  RoleModel,
+  TaskModel,
+  UserModel,
+} from '@/sequelize/models';
 import type { CommonQuery } from '@/fastify/types';
 
 export const INCLUDES_MAP = {
@@ -9,6 +15,7 @@ export const INCLUDES_MAP = {
   Project: { model: ProjectModel, as: 'project' },
   Tasks: { model: TaskModel, as: 'tasks' },
   Users: { model: UserModel },
+  Roles: { model: RoleModel },
   Members: { model: UserModel, as: 'members' },
   Owner: { model: UserModel, as: 'owner' },
   UserDetails: { model: UserModel, as: 'user_details' },

@@ -1,1 +1,0 @@
-export { projectsController } from './projectsController';

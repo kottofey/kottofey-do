@@ -1,1 +1,0 @@
-export { authSchema } from './authSchema';

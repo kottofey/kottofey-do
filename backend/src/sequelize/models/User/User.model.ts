@@ -8,13 +8,27 @@ import {
   HasMany,
   BelongsToMany,
   Scopes,
+  DefaultScope,
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
 import { isAdmin } from './Scopes';
 
-import { TaskModel, ProjectModel, ProjectMembersModel, RoleModel, UserRoleModel, RefreshTokenModel } from '@/sequelize/models';
+import {
+  TaskModel,
+  ProjectModel,
+  ProjectMembersModel,
+  RoleModel,
+  UserRoleModel,
+  RefreshTokenModel,
+} from '@/sequelize/models';
 
+@DefaultScope(() => ({
+  attributes: {
+    exclude: ['password_hash'],
+  },
+  include: { model: RoleModel, as: 'roles' },
+}))
 @Scopes(() => ({
   isAdmin,
 }))

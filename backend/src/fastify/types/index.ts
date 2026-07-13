@@ -1,1 +1,7 @@
-export type { RouteController, RouteControllerConfig, AllCrudMethods, CommonQuery } from './types';
+export type {
+  RouteController,
+  RouteControllerConfig,
+  AllCrudMethods,
+  AuthMethods,
+  CommonQuery,
+} from './types';

@@ -1,16 +1,8 @@
-export { taskSchema } from './tasks/taskSchema';
-export { projectSchema } from './projects/projectSchema';
-export { projectMemberSchema } from './project-members/projectMemberSchema';
-export { userSchema } from './users/userSchema';
-export { authSchema } from './auth/authSchema';
-
-// -----------------------------------------------------------------------------
-// Partials
-// -----------------------------------------------------------------------------
-export { taskBaseSchema, taskShortSchema } from './tasks/partials';
-export { projectBaseSchema, projectShortSchema } from './projects/partials';
-export { projectMemberBaseSchema } from './project-members/partials';
-export { userBaseSchema, userShortSchema } from './users/partials';
+// export { taskSchema, taskBaseSchema, taskShortSchema } from '@/modules/tasks';
+// export { projectSchema, projectBaseSchema, projectShortSchema } from '@/modules/projects';
+// export { projectMemberSchema, projectMemberBaseSchema } from '@/modules/project-members';
+// export { userSchema, userBaseSchema, userShortSchema } from '@/modules/users';
+// export { authSchema } from '@/modules/auth';
 
 export { metaSchema } from './metaSchema';
 export { responseSchema } from './responseSchema';
