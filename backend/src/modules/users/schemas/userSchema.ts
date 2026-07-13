@@ -1,12 +1,6 @@
 import { z } from 'zod';
 
-import {
-  userBaseSchema,
-  userCreateSchema,
-  userResponseSchema,
-  userUpdateSchema,
-  jwtUser,
-} from './partials';
+import { userCreateSchema, userResponseSchema, userUpdateSchema, jwtUser } from './partials';
 
 import { metaSchema } from '@/fastify/schemas/metaSchema';
 import { AllCrudMethods, AuthMethods, RouteControllerConfig } from '@/fastify/types';
@@ -57,7 +51,7 @@ export const userSchema: Record<AllCrudMethods | AuthMethods, RouteControllerCon
   create: {
     body: userCreateSchema,
     response: {
-      // 201: userResponseSchema,
+      201: userResponseSchema,
       // 400: z.object({ message: z.string() }),
       // 409: z.object({ message: z.string() }),
     },
@@ -69,7 +63,10 @@ export const userSchema: Record<AllCrudMethods | AuthMethods, RouteControllerCon
       id: z.coerce.number(),
     }),
     response: {
-      // 200: userResponseSchema,
+      200: z.object({
+        message: z.string(),
+        user: userResponseSchema,
+      }),
     },
   },
 
@@ -77,14 +74,22 @@ export const userSchema: Record<AllCrudMethods | AuthMethods, RouteControllerCon
     params: z.object({
       id: z.coerce.number(),
     }),
-    response: {},
+    response: {
+      200: z.object({
+        message: z.string(),
+      }),
+    },
   },
 
   restore: {
     params: z.object({
       id: z.coerce.number(),
     }),
-    response: {},
+    response: {
+      200: z.object({
+        message: z.string(),
+      }),
+    },
   },
 
   me: {

@@ -1,4 +1,4 @@
-import { FindOptions, Includeable, Transaction } from 'sequelize';
+import { FindOptions, Transaction } from 'sequelize';
 
 import { UserModel } from '@/sequelize/models';
 import { BaseRepository } from '@/shared';
@@ -22,7 +22,6 @@ export class UserRepository extends BaseRepository<UserModel> {
     return await (scopedModel as typeof UserModel).findAndCountAll({
       ...options,
       distinct: true,
-      col: 'UserModel.id',
     });
   }
 
@@ -44,7 +43,7 @@ export class UserRepository extends BaseRepository<UserModel> {
     return await this.model.findByPk(id, { paranoid });
   }
 
-  async setRolesToUser(user: UserModel, roles: number[], transaction: Transaction) {
+  async setRolesToUser(user: UserModel, roles: number[], transaction?: Transaction) {
     await user.$set('roles', roles, { transaction });
   }
 }

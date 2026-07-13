@@ -1,12 +1,15 @@
-import { Attributes, WhereOptions, Includeable, FindOptions } from 'sequelize';
+import { Attributes, FindOptions, Includeable } from 'sequelize';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
+import ms, { type StringValue } from 'ms';
+import type { FastifyReply, FastifyRequest } from 'fastify';
+import dayjs from 'dayjs';
 
 import { UserRepository } from '../repositories/UserRepository';
-import { userCreateSchema, userUpdateSchema } from '../schemas/partials';
+import { jwtUser, userCreateSchema, userUpdateSchema } from '../schemas/partials';
 
 import { BaseService } from '@/shared';
-import { RoleModel, UserModel } from '@/sequelize/models';
+import { RefreshTokenModel, RoleModel, UserModel } from '@/sequelize/models';
 import { CommonQuery } from '@/fastify/types';
 import { sequelize } from '@/sequelize';
 
@@ -15,24 +18,28 @@ export class UserService extends BaseService {
     super();
   }
 
-  async getAll(params: {
+  async getAll({
+    page,
+    limit,
+    scopes,
+    currentUser,
+    include,
+  }: {
     page: number;
     limit: number;
     scopes?: CommonQuery['scopes'];
-    userId: number;
-    isAdmin: boolean;
+    currentUser: z.infer<typeof jwtUser>;
     include?: Includeable | Includeable[];
   }) {
-    const { page, limit, scopes, userId, isAdmin, include } = params;
     const offset = (page - 1) * limit;
 
-    const where: WhereOptions = !isAdmin ? { owner_id: userId } : {};
+    const where = !this.isAdmin(currentUser.roles) ? { id: currentUser.id } : {};
 
     const { rows, count } = await this.userRepository.findAndCountAllWithScopes(
       {
-        where,
         limit,
         offset,
+        where,
         include,
         distinct: true,
       } as FindOptions,
@@ -45,18 +52,22 @@ export class UserService extends BaseService {
     };
   }
 
-  async getById(
-    id: number,
-    userId: number,
-    isAdmin: boolean,
-    include?: Includeable | Includeable[],
-  ): Promise<UserModel | null> {
-    const user = await this.userRepository.findByPk(id, { include });
+  async getById({
+    id,
+    currentUser,
+    include,
+  }: {
+    id: number;
+    currentUser: z.infer<typeof jwtUser>;
+    include?: Includeable | Includeable[];
+  }): Promise<UserModel | null> {
+    const foundUser = await this.userRepository.findByPk(id, { include });
 
-    if (!user) return null;
-    if (!isAdmin && user.id !== userId) return null;
-    //TODO Допилить хелперы проверки this.isAdmin / this.isAllowed
-    return user;
+    if (!foundUser || !this.isAllowed(id, currentUser.id, currentUser.roles)) {
+      return null;
+    }
+
+    return foundUser;
   }
 
   async create(data: z.infer<typeof userCreateSchema>): Promise<UserModel> {
@@ -66,7 +77,6 @@ export class UserService extends BaseService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // await this.userRepository.setRolesToUser(user.id, roles);
     const user = await this.userRepository.create(
       {
         email,
@@ -76,6 +86,11 @@ export class UserService extends BaseService {
     );
 
     if (roles.length > 0) {
+      // TODO Сделать модуль для ролей. А стоит ли?..
+      //  Навреное да, чтобы добавлять-удалять роли при необходимости.
+      //  Также сделать модуль для пермишенов. Подумать как это лучше реализовать.
+      //  Может быть лучше просто сервисы.
+
       const foundRoles = await RoleModel.findAll({ where: { name: roles } });
 
       if (!foundRoles.length) {
@@ -96,46 +111,38 @@ export class UserService extends BaseService {
     return user;
   }
 
-  async update(
-    id: number,
-    data: Partial<Attributes<UserModel>>,
-    userId: number,
-    roles: string[],
-  ): Promise<boolean> {
-    console.log('rrr', roles);
-    const user = await this.getById(id, userId, this.isAdmin(roles));
+  async update({
+    id,
+    currentUser,
+    data,
+  }: {
+    id: number;
+    data: Partial<Attributes<UserModel>>;
+    currentUser: z.infer<typeof jwtUser>;
+  }): Promise<UserModel | null> {
+    const user = await this.getById({ id, currentUser });
 
-    if (!user || !this.isAllowed(id, userId, roles)) return false;
+    if (!this.isAllowed(id, currentUser.id, currentUser.roles)) {
+      return null;
+    }
 
     const { password, ...restUser } = data as z.infer<typeof userUpdateSchema>;
 
     const hashedPassword = password && (await bcrypt.hash(password, 10));
 
-    await user.update({ ...restUser, password_hash: hashedPassword });
-    return true;
+    await this.userRepository.update(id, { ...restUser, password_hash: hashedPassword });
+    // await user?.update({ ...restUser, password_hash: hashedPassword });
+
+    await user?.reload();
+    return user;
   }
 
-  async delete(id: number, userId: number, isAdmin: boolean): Promise<boolean> {
-    const user = await this.getById(id, userId, isAdmin);
-
-    if (!user) return false;
-
-    await user.destroy();
-    return true;
+  async delete({ id }: { id: number; currentUser: z.infer<typeof jwtUser> }): Promise<boolean> {
+    return await this.userRepository.delete(id);
   }
 
-  async restore(id: number, userId: number, isAdmin: boolean): Promise<boolean> {
-    const user = await this.userRepository.findByPkWithParanoid(id, false);
-    if (!user?.deleted_at || !isAdmin) return false;
-
-    await user.restore();
-    return true;
-  }
-
-  async findUserExcludingPassword(userId: number): Promise<UserModel | null> {
-    return await this.userRepository.findOne({
-      where: { id: userId },
-    });
+  async restore({ id }: { id: number }): Promise<UserModel | null> {
+    return await this.userRepository.restore(id);
   }
 
   async validateUser(email: string, password: string): Promise<UserModel | null> {
@@ -151,11 +158,104 @@ export class UserService extends BaseService {
     return user;
   }
 
-  isAdmin(roles: string[]) {
-    return roles.some(r => r === 'admin');
+  async login({
+    request,
+    reply,
+  }: {
+    request: FastifyRequest;
+    reply: FastifyReply;
+  }): Promise<z.infer<typeof jwtUser> | null> {
+    const { email = '', password = '' } = request.body as FastifyRequest<{
+      Body: { email?: string; password?: string };
+    }>;
+    const validatedUser = await this.validateUser(email, password);
+
+    if (!validatedUser) return Promise.resolve(null);
+
+    // С юзером все в порядке, логинимся дальше
+
+    const payload = {
+      id: validatedUser.id,
+      email: validatedUser.email,
+      roles: validatedUser.roles.map(r => r.name),
+    };
+
+    const { accessToken, refreshToken } = await this.generateTokens({ reply, payload });
+
+    const refreshExpiresIn = ms(process.env.JWT_REFRESH_EXPIRES_IN as StringValue);
+
+    // TODO переделать на сервис слой
+
+    await RefreshTokenModel.create({
+      token: refreshToken,
+      user_id: validatedUser.id,
+      expires_at: dayjs().add(refreshExpiresIn, 'ms').toDate(),
+      user_agent: request.headers['user-agent'],
+      ip_address: request.ip,
+    });
+
+    reply.setCookie('access_token', accessToken, {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: ms(process.env.JWT_EXPIRES_IN as StringValue) * 1000,
+    });
+
+    reply.setCookie('refresh_token', refreshToken, {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: ms(process.env.JWT_REFRESH_EXPIRES_IN as StringValue) * 1000,
+    });
+
+    request.user = payload;
+
+    return Promise.resolve(payload);
   }
 
-  isAllowed(id: number, userId: number, roles: string[]) {
-    return id === userId || this.isAdmin(roles);
+  async logout({
+    request,
+    reply,
+  }: {
+    request: FastifyRequest;
+    reply: FastifyReply;
+  }): Promise<void> {
+    const refreshToken = request.cookies.refresh_token;
+
+    // TODO переделать на сервис слой
+    if (refreshToken) {
+      await RefreshTokenModel.destroy({
+        where: { token: refreshToken },
+      });
+    }
+
+    reply.clearCookie('access_token', { path: '/' });
+    reply.clearCookie('refresh_token', { path: '/' });
+  }
+
+  async generateTokens({
+    payload,
+    reply,
+  }: {
+    payload: z.infer<typeof jwtUser>;
+    reply: FastifyReply;
+  }): Promise<{
+    accessToken: string;
+    refreshToken: string;
+  }> {
+    const accessToken = await reply.jwtSign(payload, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+
+    const refreshToken = await reply.jwtSign(payload, {
+      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
+    });
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 }

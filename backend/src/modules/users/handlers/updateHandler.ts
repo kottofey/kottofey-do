@@ -13,18 +13,13 @@ export async function updateHandler(
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
 
-  const {
-    user: { roles, id: userId },
-  } = request;
-
-  const updated = await userService.update(
+  const user = await userService.update({
     id,
-    request.body as z.infer<typeof userUpdateSchema>,
-    userId,
-    roles,
-  );
+    data: request.body as z.infer<typeof userUpdateSchema>,
+    currentUser: request.user,
+  });
 
-  if (!updated) {
+  if (!user) {
     return reply.status(404).send({
       message: `User id ${id.toString()} was not updated`,
     });
@@ -32,5 +27,6 @@ export async function updateHandler(
 
   return reply.status(200).send({
     message: `User id ${id.toString()} was updated`,
+    user,
   });
 }

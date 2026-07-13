@@ -10,17 +10,14 @@ export async function getAllHandler(
 ): Promise<FastifyReply> {
   const {
     query: { page = 1, limit = 10, scopes },
-    user: { id: userId },
+    user,
   } = request;
-
-  const isAdmin = request.user.roles.some(r => r === 'admin');
 
   const result = await userService.getAll({
     page,
     limit,
     scopes,
-    userId,
-    isAdmin,
+    currentUser: user,
     include: parseIncludes(request),
   });
 

@@ -11,12 +11,11 @@ export async function getByIdHandler(
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
 
-  const {
-    user: { roles, id: userId },
-  } = request;
-  const isAdmin = roles.some(r => r === 'admin');
-
-  const user = await userService.getById(id, userId, isAdmin, parseIncludes(request));
+  const user = await userService.getById({
+    id,
+    currentUser: request.user,
+    include: parseIncludes(request),
+  });
 
   if (!user) {
     return reply.status(404).send({ message: `User id ${id.toString()} not found` });
