@@ -58,7 +58,9 @@ export abstract class BaseRepository<M extends Model> {
     return null;
   }
 
-  protected getScopedModel(scopes: string | ScopeOptions | (string | ScopeOptions)[] | undefined): ModelStatic<M> {
+  protected getScopedModel(
+    scopes: string | ScopeOptions | (string | ScopeOptions)[] | undefined,
+  ): ModelStatic<M> {
     return this.model.scope(scopes);
   }
 }

@@ -46,8 +46,7 @@ async function getExecutedSeeders(): Promise<string[]> {
 async function executeSeeder(filepath: string, direction: 'up' | 'down' = 'up'): Promise<boolean> {
   try {
     const seederModule = (await import(path.join(SEEDERS_DIR, filepath))) as
-      | { default?: SeederModule }
-      | SeederModule;
+      { default?: SeederModule } | SeederModule;
     const seeder: SeederModule =
       (seederModule as { default?: SeederModule }).default ?? (seederModule as SeederModule);
 

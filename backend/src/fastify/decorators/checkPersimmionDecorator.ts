@@ -44,7 +44,10 @@ export async function checkPersimmionDecorator(request: FastifyRequest, reply: F
 
     // Если права были указаны, но не найдены у пользователя — доступ запрещен,
     // даже если роль совпадает с allowedRoles (строгая проверка прав)
-    fastify.log.warn({ requiredPermissions, userRoles }, 'Permission denied: missing required permissions');
+    fastify.log.warn(
+      { requiredPermissions, userRoles },
+      'Permission denied: missing required permissions',
+    );
     return reply.status(403).send({ message: 'Forbidden: Insufficient permissions' });
   }
 

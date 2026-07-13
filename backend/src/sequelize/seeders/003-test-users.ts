@@ -8,11 +8,29 @@ const seeder: SeederModule = {
     const transaction = await sequelize.transaction();
     try {
       const passwordHash = await bcrypt.hash('password123', 10);
-      
+
       const users = [
-        { id: 10, email: 'admin@todo.com', password_hash: passwordHash, created_at: new Date(), updated_at: new Date() },
-        { id: 11, email: 'user@todo.com', password_hash: passwordHash, created_at: new Date(), updated_at: new Date() },
-        { id: 12, email: 'guest@todo.com', password_hash: passwordHash, created_at: new Date(), updated_at: new Date() },
+        {
+          id: 10,
+          email: 'admin@todo.com',
+          password_hash: passwordHash,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+        {
+          id: 11,
+          email: 'user@todo.com',
+          password_hash: passwordHash,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+        {
+          id: 12,
+          email: 'guest@todo.com',
+          password_hash: passwordHash,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
       ];
 
       await queryInterface.bulkInsert('Users', users, { transaction });
@@ -24,7 +42,7 @@ const seeder: SeederModule = {
       ];
 
       await queryInterface.bulkInsert('UserRoles', userRoles, { transaction });
-      
+
       await transaction.commit();
     } catch (e) {
       await transaction.rollback();

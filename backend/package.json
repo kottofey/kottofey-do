@@ -10,7 +10,7 @@
     "BACKEND:prod": "node --env-file=.env dist/server.js",
     "build": "tsup && tsc-alias",
     "BACKEND:check-types": "tsc -b --noEmit",
-    "lint:backend": "eslint --config eslint.config.ts --ext .ts,.js --fix ./src"
+    "lint:backend": "prettier --log-level silent --write src/ && eslint --config eslint.config.ts --ext .ts,.js --fix ./src"
   },
   "license": "ISC",
   "dependencies": {
