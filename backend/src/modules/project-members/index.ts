@@ -11,4 +11,4 @@ import { ProjectMemberService } from './services/ProjectMemberService';
 const projectMemberRepository = new ProjectMemberRepository();
 export const projectMemberService = new ProjectMemberService(projectMemberRepository);
 
-export { projectMembersController } from './projectMembersController';
+// export { projectMembersController } from './projectMembersController';
