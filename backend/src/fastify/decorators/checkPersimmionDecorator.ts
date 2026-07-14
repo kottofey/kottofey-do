@@ -9,7 +9,10 @@ export async function checkPersimmionDecorator(request: FastifyRequest, reply: F
     requiredPermissions?: string[];
   };
 
-  fastify.log.info({ allowedRoles, requiredPermissions }, 'Checking permissions');
+  fastify.log.info(
+    { allowedRoles, userRoles: request.user.roles, requiredPermissions },
+    'Checking permissions',
+  );
 
   if (!allowedRoles || allowedRoles.includes('any')) {
     fastify.log.info('Permissions granted (15)');
