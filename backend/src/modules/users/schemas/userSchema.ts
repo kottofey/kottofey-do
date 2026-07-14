@@ -1,15 +1,30 @@
 import { z } from 'zod';
 
-import { userCreateSchema, userResponseSchema, userUpdateSchema, jwtUser } from './partials';
+import {
+  userCreateSchema,
+  userResponseSchema,
+  userUpdateSchema,
+  jwtUser,
+} from './partials';
 
 import { metaSchema } from '@/fastify/schemas/metaSchema';
-import { AllCrudMethods, AuthMethods, RouteControllerConfig } from '@/fastify/types';
+import {
+  AllCrudMethods,
+  AuthMethods,
+  RouteControllerConfig,
+} from '@/fastify/types';
 import { USER_SCOPE_HANDLERS } from '@/sequelize/models/User';
 
 const scopeKeys = Object.keys(USER_SCOPE_HANDLERS) as [string, ...string[]];
-const scopesSchema = z.array(z.enum(scopeKeys)).or(z.record(z.string(), z.unknown())).optional();
+const scopesSchema = z
+  .array(z.enum(scopeKeys))
+  .or(z.record(z.string(), z.unknown()))
+  .optional();
 
-export const userSchema: Record<AllCrudMethods | AuthMethods, RouteControllerConfig['schema']> = {
+export const userSchema: Record<
+  AllCrudMethods | AuthMethods,
+  RouteControllerConfig['schema']
+> = {
   getAll: {
     querystring: z.object({
       includes: z.string().array().optional(),

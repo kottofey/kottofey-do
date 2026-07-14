@@ -7,7 +7,10 @@ import { BaseService } from '@/shared';
 import { TaskModel } from '@/sequelize/models';
 import { CommonQuery } from '@/fastify/types';
 import { jwtUser } from '@/modules/users/schemas/partials';
-import { taskCreateSchema, taskUpdateSchema } from '@/modules/tasks/schemas/partials';
+import {
+  taskCreateSchema,
+  taskUpdateSchema,
+} from '@/modules/tasks/schemas/partials';
 
 export class TaskService extends BaseService {
   constructor(private taskRepository: TaskRepository) {
@@ -29,7 +32,9 @@ export class TaskService extends BaseService {
   }) {
     const offset = (page - 1) * limit;
 
-    const where = !this.isAdmin(currentUser.roles) ? { owner_id: currentUser.id } : {};
+    const where = !this.isAdmin(currentUser.roles)
+      ? { owner_id: currentUser.id }
+      : {};
 
     const { rows, count } = await this.taskRepository.findAndCountAllWithScopes(
       {
@@ -59,7 +64,10 @@ export class TaskService extends BaseService {
     include?: Includeable | Includeable[];
     otherOptions?: FindOptions<TaskModel>;
   }): Promise<TaskModel | null> {
-    const task = await this.taskRepository.findByPk(id, { include, ...otherOptions });
+    const task = await this.taskRepository.findByPk(id, {
+      include,
+      ...otherOptions,
+    });
 
     if (
       !task ||
@@ -82,7 +90,10 @@ export class TaskService extends BaseService {
     data: z.infer<typeof taskCreateSchema>;
     currentUser: z.infer<typeof jwtUser>;
   }): Promise<TaskModel> {
-    return await this.taskRepository.create({ ...data, owner_id: currentUser.id });
+    return await this.taskRepository.create({
+      ...data,
+      owner_id: currentUser.id,
+    });
   }
 
   async update({
@@ -110,7 +121,11 @@ export class TaskService extends BaseService {
     currentUser: z.infer<typeof jwtUser>;
     force: boolean;
   }): Promise<boolean> {
-    const task = await this.getById({ id, currentUser, otherOptions: { paranoid: !force } });
+    const task = await this.getById({
+      id,
+      currentUser,
+      otherOptions: { paranoid: !force },
+    });
 
     if (!task) return false;
 

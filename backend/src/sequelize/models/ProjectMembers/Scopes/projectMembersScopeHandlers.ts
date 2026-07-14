@@ -17,4 +17,5 @@ export const PROJECT_MEMBER_SCOPE_HANDLERS = {
   },
 } as const satisfies Record<string, ScopeHandler>;
 
-export type ProjectMembersScopeName = keyof typeof PROJECT_MEMBER_SCOPE_HANDLERS;
+export type ProjectMembersScopeName =
+  keyof typeof PROJECT_MEMBER_SCOPE_HANDLERS;

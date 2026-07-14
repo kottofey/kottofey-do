@@ -36,9 +36,24 @@ const seeder: SeederModule = {
       await queryInterface.bulkInsert('Users', users, { transaction });
 
       const userRoles = [
-        { user_id: 10, role_id: 1, created_at: new Date(), updated_at: new Date() }, // admin
-        { user_id: 11, role_id: 2, created_at: new Date(), updated_at: new Date() }, // user
-        { user_id: 12, role_id: 3, created_at: new Date(), updated_at: new Date() }, // guest
+        {
+          user_id: 10,
+          role_id: 1,
+          created_at: new Date(),
+          updated_at: new Date(),
+        }, // admin
+        {
+          user_id: 11,
+          role_id: 2,
+          created_at: new Date(),
+          updated_at: new Date(),
+        }, // user
+        {
+          user_id: 12,
+          role_id: 3,
+          created_at: new Date(),
+          updated_at: new Date(),
+        }, // guest
       ];
 
       await queryInterface.bulkInsert('UserRoles', userRoles, { transaction });
@@ -54,8 +69,16 @@ const seeder: SeederModule = {
   async down(queryInterface: QueryInterface): Promise<void> {
     const transaction = await sequelize.transaction();
     try {
-      await queryInterface.bulkDelete('UserRoles', { user_id: [10, 11, 12] }, { transaction });
-      await queryInterface.bulkDelete('Users', { id: [10, 11, 12] }, { transaction });
+      await queryInterface.bulkDelete(
+        'UserRoles',
+        { user_id: [10, 11, 12] },
+        { transaction },
+      );
+      await queryInterface.bulkDelete(
+        'Users',
+        { id: [10, 11, 12] },
+        { transaction },
+      );
       await transaction.commit();
     } catch (e) {
       await transaction.rollback();

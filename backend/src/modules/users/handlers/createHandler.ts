@@ -10,7 +10,9 @@ export async function createHandler(
   request: FastifyRequest<{ Querystring: CommonQuery }>,
   reply: FastifyReply,
 ): Promise<FastifyReply> {
-  const user = await userService.create(request.body as z.infer<typeof userCreateSchema>);
+  const user = await userService.create(
+    request.body as z.infer<typeof userCreateSchema>,
+  );
 
   return reply.status(201).send(user);
 }

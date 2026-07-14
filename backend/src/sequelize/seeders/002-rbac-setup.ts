@@ -178,27 +178,127 @@ const rolePermissions = [
     updated_at: new Date(),
   })),
   // User permissions
-  { role_id: 2, permission_id: 1, created_at: new Date(), updated_at: new Date() }, // task:create
-  { role_id: 2, permission_id: 2, created_at: new Date(), updated_at: new Date() }, // task:read
-  { role_id: 2, permission_id: 3, created_at: new Date(), updated_at: new Date() }, // task:update
-  { role_id: 2, permission_id: 4, created_at: new Date(), updated_at: new Date() }, // task:delete
-  { role_id: 2, permission_id: 5, created_at: new Date(), updated_at: new Date() }, // task:restore
-  { role_id: 2, permission_id: 6, created_at: new Date(), updated_at: new Date() }, // project:create
-  { role_id: 2, permission_id: 7, created_at: new Date(), updated_at: new Date() }, // project:read
-  { role_id: 2, permission_id: 8, created_at: new Date(), updated_at: new Date() }, // project:update
-  { role_id: 2, permission_id: 9, created_at: new Date(), updated_at: new Date() }, // project:delete
-  { role_id: 2, permission_id: 10, created_at: new Date(), updated_at: new Date() }, // project:restore
-  { role_id: 2, permission_id: 11, created_at: new Date(), updated_at: new Date() }, // user:read
-  { role_id: 2, permission_id: 13, created_at: new Date(), updated_at: new Date() }, // user:update - только себя
-  { role_id: 2, permission_id: 16, created_at: new Date(), updated_at: new Date() }, // project-member:create
-  { role_id: 2, permission_id: 17, created_at: new Date(), updated_at: new Date() }, // project-member:read
-  { role_id: 2, permission_id: 18, created_at: new Date(), updated_at: new Date() }, // project-member:update
-  { role_id: 2, permission_id: 19, created_at: new Date(), updated_at: new Date() }, // project-member:delete
-  { role_id: 2, permission_id: 20, created_at: new Date(), updated_at: new Date() }, // project-member:restore
+  {
+    role_id: 2,
+    permission_id: 1,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // task:create
+  {
+    role_id: 2,
+    permission_id: 2,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // task:read
+  {
+    role_id: 2,
+    permission_id: 3,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // task:update
+  {
+    role_id: 2,
+    permission_id: 4,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // task:delete
+  {
+    role_id: 2,
+    permission_id: 5,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // task:restore
+  {
+    role_id: 2,
+    permission_id: 6,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // project:create
+  {
+    role_id: 2,
+    permission_id: 7,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // project:read
+  {
+    role_id: 2,
+    permission_id: 8,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // project:update
+  {
+    role_id: 2,
+    permission_id: 9,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // project:delete
+  {
+    role_id: 2,
+    permission_id: 10,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // project:restore
+  {
+    role_id: 2,
+    permission_id: 11,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // user:read
+  {
+    role_id: 2,
+    permission_id: 13,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // user:update - только себя
+  {
+    role_id: 2,
+    permission_id: 16,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // project-member:create
+  {
+    role_id: 2,
+    permission_id: 17,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // project-member:read
+  {
+    role_id: 2,
+    permission_id: 18,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // project-member:update
+  {
+    role_id: 2,
+    permission_id: 19,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // project-member:delete
+  {
+    role_id: 2,
+    permission_id: 20,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // project-member:restore
   // Guest permissions
-  { role_id: 3, permission_id: 2, created_at: new Date(), updated_at: new Date() }, // task:read
-  { role_id: 3, permission_id: 7, created_at: new Date(), updated_at: new Date() }, // project:read
-  { role_id: 3, permission_id: 17, created_at: new Date(), updated_at: new Date() }, // project-member:read
+  {
+    role_id: 3,
+    permission_id: 2,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // task:read
+  {
+    role_id: 3,
+    permission_id: 7,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // project:read
+  {
+    role_id: 3,
+    permission_id: 17,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }, // project-member:read
 ];
 
 const seeder: SeederModule = {
@@ -206,8 +306,12 @@ const seeder: SeederModule = {
     const transaction = await sequelize.transaction();
     try {
       await queryInterface.bulkInsert('Roles', roles, { transaction });
-      await queryInterface.bulkInsert('Permissions', permissions, { transaction });
-      await queryInterface.bulkInsert('RolePermissions', rolePermissions, { transaction });
+      await queryInterface.bulkInsert('Permissions', permissions, {
+        transaction,
+      });
+      await queryInterface.bulkInsert('RolePermissions', rolePermissions, {
+        transaction,
+      });
       await transaction.commit();
     } catch (e) {
       await transaction.rollback();

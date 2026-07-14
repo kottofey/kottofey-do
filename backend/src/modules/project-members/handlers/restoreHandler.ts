@@ -13,7 +13,11 @@ export async function restoreHandler(
   const { roles, id: userId } = request.user;
   const isAdmin = roles.some(r => r === 'admin');
 
-  const restoredMember = await projectMemberService.restore(id, userId, isAdmin);
+  const restoredMember = await projectMemberService.restore(
+    id,
+    userId,
+    isAdmin,
+  );
 
   if (!restoredMember) {
     return reply.status(404).send({

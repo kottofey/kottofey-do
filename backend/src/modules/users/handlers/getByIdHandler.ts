@@ -18,7 +18,9 @@ export async function getByIdHandler(
   });
 
   if (!user) {
-    return reply.status(404).send({ message: `User id ${id.toString()} not found` });
+    return reply
+      .status(404)
+      .send({ message: `User id ${id.toString()} not found` });
   }
 
   return reply.status(200).send(user);

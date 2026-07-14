@@ -1,6 +1,9 @@
 import Fastify from 'fastify';
 import qs from 'qs';
-import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
+import {
+  serializerCompiler,
+  validatorCompiler,
+} from 'fastify-type-provider-zod';
 
 import { normalizePort } from '@/fastify/helpers';
 import {
@@ -12,7 +15,10 @@ import {
   routesMap,
 } from '@/fastify/config';
 import { sequelize } from '@/sequelize';
-import { authenticateDecorator, checkPersimmionDecorator } from '@/fastify/decorators';
+import {
+  authenticateDecorator,
+  checkPersimmionDecorator,
+} from '@/fastify/decorators';
 
 // -----------------------------------------------------------------------------
 // Fastify
@@ -22,7 +28,8 @@ export const fastify = Fastify({
   logger: getLogger(),
   serializerOpts: {},
   routerOptions: {
-    querystringParser: str => qs.parse(str, { throwOnLimitExceeded: true, comma: true }),
+    querystringParser: str =>
+      qs.parse(str, { throwOnLimitExceeded: true, comma: true }),
   },
   disableRequestLogging: true,
 });

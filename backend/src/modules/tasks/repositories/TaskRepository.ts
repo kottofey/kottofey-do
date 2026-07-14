@@ -22,7 +22,10 @@ export class TaskRepository extends BaseRepository<TaskModel> {
     return await (scopedModel as typeof TaskModel).findAndCountAll(options);
   }
 
-  async findByPkWithParanoid(id: number, paranoid = true): Promise<TaskModel | null> {
+  async findByPkWithParanoid(
+    id: number,
+    paranoid = true,
+  ): Promise<TaskModel | null> {
     return await this.model.findByPk(id, { paranoid });
   }
 }

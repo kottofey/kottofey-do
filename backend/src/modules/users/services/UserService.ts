@@ -6,7 +6,11 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import dayjs from 'dayjs';
 
 import { UserRepository } from '../repositories/UserRepository';
-import { jwtUser, userCreateSchema, userUpdateSchema } from '../schemas/partials';
+import {
+  jwtUser,
+  userCreateSchema,
+  userUpdateSchema,
+} from '../schemas/partials';
 
 import { BaseService } from '@/shared';
 import { RefreshTokenModel, RoleModel, UserModel } from '@/sequelize/models';
@@ -33,7 +37,9 @@ export class UserService extends BaseService {
   }) {
     const offset = (page - 1) * limit;
 
-    const where = !this.isAdmin(currentUser.roles) ? { id: currentUser.id } : {};
+    const where = !this.isAdmin(currentUser.roles)
+      ? { id: currentUser.id }
+      : {};
 
     const { rows, count } = await this.userRepository.findAndCountAllWithScopes(
       {
@@ -143,14 +149,22 @@ export class UserService extends BaseService {
 
     const hashedPassword = password && (await bcrypt.hash(password, 10));
 
-    await this.userRepository.update(id, { ...restUser, password_hash: hashedPassword });
+    await this.userRepository.update(id, {
+      ...restUser,
+      password_hash: hashedPassword,
+    });
     // await user?.update({ ...restUser, password_hash: hashedPassword });
 
     await user?.reload();
     return user;
   }
 
-  async delete({ id }: { id: number; currentUser: z.infer<typeof jwtUser> }): Promise<boolean> {
+  async delete({
+    id,
+  }: {
+    id: number;
+    currentUser: z.infer<typeof jwtUser>;
+  }): Promise<boolean> {
     return await this.userRepository.delete(id);
   }
 
@@ -158,7 +172,10 @@ export class UserService extends BaseService {
     return await this.userRepository.restore(id);
   }
 
-  async validateUser(email: string, password: string): Promise<UserModel | null> {
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<UserModel | null> {
     const user = await this.userRepository.findByEmail(email, true);
 
     if (!user?.password_hash) return null;
@@ -193,9 +210,14 @@ export class UserService extends BaseService {
       roles: validatedUser.roles.map(r => r.name),
     };
 
-    const { accessToken, refreshToken } = await this.generateTokens({ reply, payload });
+    const { accessToken, refreshToken } = await this.generateTokens({
+      reply,
+      payload,
+    });
 
-    const refreshExpiresIn = ms(process.env.JWT_REFRESH_EXPIRES_IN as StringValue);
+    const refreshExpiresIn = ms(
+      process.env.JWT_REFRESH_EXPIRES_IN as StringValue,
+    );
 
     // TODO переделать на сервис слой
 

@@ -13,7 +13,8 @@ export const TASK_SCOPE_HANDLERS = {
       ids = [Number(rawIds)];
     }
 
-    if (isNaN(ids[0])) throw Error('Неверный формат в скоупе byIds. Разделитель запятая.');
+    if (isNaN(ids[0]))
+      throw Error('Неверный формат в скоупе byIds. Разделитель запятая.');
 
     return {
       method: ['tasks:byIds', ids],
@@ -27,7 +28,9 @@ export const TASK_SCOPE_HANDLERS = {
     } else if (statusRaw === '0') {
       status = false;
     } else {
-      throw new Error('Неверное значение в скоупе byStatus, может быть 1 или 0');
+      throw new Error(
+        'Неверное значение в скоупе byStatus, может быть 1 или 0',
+      );
     }
 
     return {
@@ -44,7 +47,8 @@ export const TASK_SCOPE_HANDLERS = {
     };
   },
   'tasks:byProject': (project_id: unknown) => {
-    if (isNaN(Number(project_id))) throw Error('project_id должен быть числом.');
+    if (isNaN(Number(project_id)))
+      throw Error('project_id должен быть числом.');
     return {
       method: ['tasks:byProject', Number(project_id)],
     };

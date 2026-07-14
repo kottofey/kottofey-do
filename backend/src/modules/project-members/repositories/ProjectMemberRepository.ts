@@ -19,14 +19,22 @@ export class ProjectMemberRepository extends BaseRepository<ProjectMembersModel>
       ? this.getScopedModel(parseScopes(scopes, TASK_SCOPE_HANDLERS))
       : this.model;
 
-    return await (scopedModel as typeof ProjectMembersModel).findAndCountAll(options);
+    return await (scopedModel as typeof ProjectMembersModel).findAndCountAll(
+      options,
+    );
   }
 
-  async findByPkWithParanoid(id: number, paranoid = true): Promise<ProjectMembersModel | null> {
+  async findByPkWithParanoid(
+    id: number,
+    paranoid = true,
+  ): Promise<ProjectMembersModel | null> {
     return await this.model.findByPk(id, { paranoid });
   }
 
-  async findMember(project_id: number, user_id: number): Promise<ProjectMembersModel | null> {
+  async findMember(
+    project_id: number,
+    user_id: number,
+  ): Promise<ProjectMembersModel | null> {
     return await this.model.findOne({
       where: { project_id, user_id },
     });

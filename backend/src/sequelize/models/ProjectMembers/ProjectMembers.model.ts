@@ -40,7 +40,10 @@ export class ProjectMembersModel extends Model {
   declare user_id: number;
 
   @NotNull
-  @Column({ type: DataTypes.ENUM('owner', 'editor', 'viewer'), allowNull: false })
+  @Column({
+    type: DataTypes.ENUM('owner', 'editor', 'viewer'),
+    allowNull: false,
+  })
   declare role: 'owner' | 'editor' | 'viewer';
 
   @Column({
@@ -73,6 +76,9 @@ export class ProjectMembersModel extends Model {
   @BelongsTo(() => UserModel, { as: 'user_details', foreignKey: 'user_id' })
   declare user_details: UserModel;
 
-  @BelongsTo(() => ProjectModel, { as: 'project_details', foreignKey: 'project_id' })
+  @BelongsTo(() => ProjectModel, {
+    as: 'project_details',
+    foreignKey: 'project_id',
+  })
   declare project_details: ProjectModel;
 }

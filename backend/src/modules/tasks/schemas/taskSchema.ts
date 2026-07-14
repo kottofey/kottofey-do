@@ -7,9 +7,15 @@ import { AllCrudMethods, RouteControllerConfig } from '@/fastify/types';
 import { TASK_SCOPE_HANDLERS } from '@/sequelize/models/Task';
 
 const scopeKeys = Object.keys(TASK_SCOPE_HANDLERS) as [string, ...string[]];
-const scopesSchema = z.array(z.enum(scopeKeys)).or(z.record(z.string(), z.unknown())).optional();
+const scopesSchema = z
+  .array(z.enum(scopeKeys))
+  .or(z.record(z.string(), z.unknown()))
+  .optional();
 
-export const taskSchema: Record<AllCrudMethods, RouteControllerConfig['schema']> = {
+export const taskSchema: Record<
+  AllCrudMethods,
+  RouteControllerConfig['schema']
+> = {
   getAll: {
     querystring: z.object({
       includes: z.string().array().optional(),

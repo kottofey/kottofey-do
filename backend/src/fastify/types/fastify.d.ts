@@ -18,8 +18,14 @@ declare module 'fastify' {
     // -----------------------------------------------------------------------------
     // Декораторы
     // -----------------------------------------------------------------------------
-    authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
-    checkPermissions: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+    authenticate: (
+      request: FastifyRequest,
+      reply: FastifyReply,
+    ) => Promise<void>;
+    checkPermissions: (
+      request: FastifyRequest,
+      reply: FastifyReply,
+    ) => Promise<void>;
   }
 }
 

@@ -18,7 +18,10 @@ const COOKIE_OPTIONS = {
   sameSite: 'strict' as const,
 };
 
-export async function authenticateDecorator(request: FastifyRequest, reply: FastifyReply) {
+export async function authenticateDecorator(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
   try {
     fastify.log.info('Trying to authenticate');
 
@@ -28,7 +31,9 @@ export async function authenticateDecorator(request: FastifyRequest, reply: Fast
 
     if (error.code !== 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
       fastify.log.warn('Что-то неладное');
-      return reply.status(401).send({ message: 'Unauthorized', debug_error: error });
+      return reply
+        .status(401)
+        .send({ message: 'Unauthorized', debug_error: error });
     }
 
     const oldToken = request.cookies.refresh_token;
@@ -63,7 +68,9 @@ export async function authenticateDecorator(request: FastifyRequest, reply: Fast
       reply.jwtSign(payload, { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN }),
     ]);
 
-    const refreshExpiresIn = ms(process.env.JWT_REFRESH_EXPIRES_IN as StringValue);
+    const refreshExpiresIn = ms(
+      process.env.JWT_REFRESH_EXPIRES_IN as StringValue,
+    );
 
     await storedToken.update({
       token: refreshToken,

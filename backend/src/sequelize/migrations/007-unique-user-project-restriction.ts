@@ -3,15 +3,21 @@ import type { Sequelize } from 'sequelize-typescript';
 
 import type { Migration } from '@/lib/umzug';
 
-export const up: Migration = async ({ context: sequelize }: { context: Sequelize }) => {
+export const up: Migration = async ({
+  context: sequelize,
+}: {
+  context: Sequelize;
+}) => {
   const transaction = await sequelize.transaction();
 
   try {
-    await sequelize.getQueryInterface().addIndex('ProjectMembers', ['user_id', 'project_id'], {
-      unique: true,
-      name: 'unique_user_project',
-      transaction,
-    });
+    await sequelize
+      .getQueryInterface()
+      .addIndex('ProjectMembers', ['user_id', 'project_id'], {
+        unique: true,
+        name: 'unique_user_project',
+        transaction,
+      });
 
     await transaction.commit();
   } catch (error) {
@@ -20,7 +26,11 @@ export const up: Migration = async ({ context: sequelize }: { context: Sequelize
   }
 };
 
-export const down: Migration = async ({ context: sequelize }: { context: Sequelize }) => {
+export const down: Migration = async ({
+  context: sequelize,
+}: {
+  context: Sequelize;
+}) => {
   const transaction = await sequelize.transaction();
   try {
     await sequelize

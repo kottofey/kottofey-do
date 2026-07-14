@@ -7,7 +7,11 @@ export const projectMemberCreateSchema = projectMemberBaseSchema
     id: true,
   })
   .extend({
-    created_at: projectMemberBaseSchema.shape.created_at.default(dayjs().valueOf()),
-    updated_at: projectMemberBaseSchema.shape.updated_at.default(dayjs().valueOf()),
+    created_at: projectMemberBaseSchema.shape.created_at.default(
+      dayjs().valueOf(),
+    ),
+    updated_at: projectMemberBaseSchema.shape.updated_at.default(
+      dayjs().valueOf(),
+    ),
   })
   .strict();

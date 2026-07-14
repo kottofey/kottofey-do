@@ -47,7 +47,9 @@ function parseIncludeString(includeStr: string): Includeable | null {
   };
 }
 
-export const parseIncludes = (req: FastifyRequest<{ Querystring: CommonQuery }>): Includeable[] => {
+export const parseIncludes = (
+  req: FastifyRequest<{ Querystring: CommonQuery }>,
+): Includeable[] => {
   const rawIncludes = req.query.includes;
   if (!rawIncludes) return [];
 

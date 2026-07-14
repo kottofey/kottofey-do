@@ -20,7 +20,10 @@ export abstract class BaseRepository<M extends Model> {
     return await this.model.findAndCountAll(options);
   }
 
-  async findByPk(id: number | string, options?: FindOptions<Attributes<M>>): Promise<M | null> {
+  async findByPk(
+    id: number | string,
+    options?: FindOptions<Attributes<M>>,
+  ): Promise<M | null> {
     return await this.model.findByPk(id, options);
   }
 
@@ -28,7 +31,10 @@ export abstract class BaseRepository<M extends Model> {
     return await this.model.findOne(options);
   }
 
-  async create(data: CreationAttributes<M>, options?: CreateOptions<Attributes<M>>): Promise<M> {
+  async create(
+    data: CreationAttributes<M>,
+    options?: CreateOptions<Attributes<M>>,
+  ): Promise<M> {
     return await this.model.create(data, options);
   }
 
@@ -42,14 +48,20 @@ export abstract class BaseRepository<M extends Model> {
     return await instance.update(data, options);
   }
 
-  async delete(id: number | string, options?: DestroyOptions<Attributes<M>>): Promise<boolean> {
+  async delete(
+    id: number | string,
+    options?: DestroyOptions<Attributes<M>>,
+  ): Promise<boolean> {
     const instance = await this.findByPk(id);
     if (!instance) return false;
     await instance.destroy(options);
     return true;
   }
 
-  async restore(id: number | string, options?: RestoreOptions<Attributes<M>>): Promise<M | null> {
+  async restore(
+    id: number | string,
+    options?: RestoreOptions<Attributes<M>>,
+  ): Promise<M | null> {
     const instance = await this.model.findByPk(id, { paranoid: false });
     if (instance) {
       await instance.restore(options);

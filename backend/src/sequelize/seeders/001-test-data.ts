@@ -89,14 +89,20 @@ const seeder: SeederModule = {
     const transaction2 = await sequelize.transaction();
 
     try {
-      await queryInterface.bulkInsert('Users', users, { transaction: transaction1 });
+      await queryInterface.bulkInsert('Users', users, {
+        transaction: transaction1,
+      });
       await transaction1.commit();
 
-      await queryInterface.bulkInsert('Projects', projects, { transaction: transaction2 });
+      await queryInterface.bulkInsert('Projects', projects, {
+        transaction: transaction2,
+      });
       await queryInterface.bulkInsert('ProjectMembers', project_members, {
         transaction: transaction2,
       });
-      await queryInterface.bulkInsert('Tasks', tasks, { transaction: transaction2 });
+      await queryInterface.bulkInsert('Tasks', tasks, {
+        transaction: transaction2,
+      });
 
       await transaction2.commit();
     } catch (e) {

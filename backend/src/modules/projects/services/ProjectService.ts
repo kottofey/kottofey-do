@@ -38,18 +38,21 @@ export class ProjectService extends BaseService {
       };
     }
 
-    const where = !this.isAdmin(currentUser.roles) ? { id: { [Op.in]: projectIds } } : {};
+    const where = !this.isAdmin(currentUser.roles)
+      ? { id: { [Op.in]: projectIds } }
+      : {};
 
-    const { rows, count } = await this.projectRepository.findAndCountAllWithScopes(
-      {
-        where,
-        limit,
-        offset,
-        include,
-        distinct: true,
-      } as FindOptions,
-      scopes,
-    );
+    const { rows, count } =
+      await this.projectRepository.findAndCountAllWithScopes(
+        {
+          where,
+          limit,
+          offset,
+          include,
+          distinct: true,
+        } as FindOptions,
+        scopes,
+      );
 
     return {
       data: rows,
@@ -140,7 +143,10 @@ export class ProjectService extends BaseService {
     id: number;
     currentUser: z.infer<typeof jwtUser>;
   }): Promise<ProjectModel | null> {
-    const project = await this.projectRepository.findByPkWithParanoid(id, false);
+    const project = await this.projectRepository.findByPkWithParanoid(
+      id,
+      false,
+    );
     if (!project) return null;
 
     if (
@@ -158,26 +164,45 @@ export class ProjectService extends BaseService {
   }
 
   async getOwnAndMembersProjectIds(userId: number): Promise<number[] | null> {
-    const { rows: ownedProjects } = await this.projectRepository.findAndCountAllWithScopes({
-      attributes: ['id'],
-      where: { owner_id: userId },
-    });
+    const { rows: ownedProjects } =
+      await this.projectRepository.findAndCountAllWithScopes({
+        attributes: ['id'],
+        where: { owner_id: userId },
+      });
 
-    const { rows: memberProjects } = await this.projectRepository.findAndCountAllWithScopes({
-      attributes: ['id'],
-      include: [{ association: 'members', attributes: ['id'], required: true }],
-      where: { '$members.id$': userId },
-    });
+    const { rows: memberProjects } =
+      await this.projectRepository.findAndCountAllWithScopes({
+        attributes: ['id'],
+        include: [
+          { association: 'members', attributes: ['id'], required: true },
+        ],
+        where: { '$members.id$': userId },
+      });
 
-    const allIds = [...ownedProjects.map(p => p.id), ...memberProjects.map(p => p.id)];
+    const allIds = [
+      ...ownedProjects.map(p => p.id),
+      ...memberProjects.map(p => p.id),
+    ];
     return allIds.length ? [...new Set(allIds)] : null;
   }
 
-  isProjectOwner({ projectOwnerId, userId }: { projectOwnerId: number; userId: number }) {
+  isProjectOwner({
+    projectOwnerId,
+    userId,
+  }: {
+    projectOwnerId: number;
+    userId: number;
+  }) {
     return projectOwnerId === userId;
   }
 
-  async isProjectMember({ projectId, userId }: { projectId: number; userId: number }) {
+  async isProjectMember({
+    projectId,
+    userId,
+  }: {
+    projectId: number;
+    userId: number;
+  }) {
     const { count } = await this.projectRepository.findAndCountAllWithScopes({
       where: { id: projectId },
       attributes: ['id'],

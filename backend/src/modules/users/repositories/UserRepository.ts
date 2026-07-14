@@ -25,7 +25,10 @@ export class UserRepository extends BaseRepository<UserModel> {
     });
   }
 
-  async findByEmail(email: string, withPassword = false): Promise<UserModel | null> {
+  async findByEmail(
+    email: string,
+    withPassword = false,
+  ): Promise<UserModel | null> {
     if (withPassword) {
       return await this.model.unscoped().findOne({
         where: { email },
@@ -39,11 +42,18 @@ export class UserRepository extends BaseRepository<UserModel> {
     });
   }
 
-  async findByPkWithParanoid(id: number, paranoid = true): Promise<UserModel | null> {
+  async findByPkWithParanoid(
+    id: number,
+    paranoid = true,
+  ): Promise<UserModel | null> {
     return await this.model.findByPk(id, { paranoid });
   }
 
-  async setRolesToUser(user: UserModel, roles: number[], transaction?: Transaction) {
+  async setRolesToUser(
+    user: UserModel,
+    roles: number[],
+    transaction?: Transaction,
+  ) {
     await user.$set('roles', roles, { transaction });
   }
 }

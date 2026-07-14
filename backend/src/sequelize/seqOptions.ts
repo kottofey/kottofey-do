@@ -9,8 +9,15 @@ const envPath = join(process.cwd(), '.env');
 
 const env = await fs.readFile(envPath, 'utf8');
 
-const { DB_NAME, DB_USERNAME, DB_PASSWORD, DB_HOST_NAME, DB_PORT, NODE_ENV, SEQUELIZE_LOG } =
-  dotenv.parse(env);
+const {
+  DB_NAME,
+  DB_USERNAME,
+  DB_PASSWORD,
+  DB_HOST_NAME,
+  DB_PORT,
+  NODE_ENV,
+  SEQUELIZE_LOG,
+} = dotenv.parse(env);
 
 const options: SequelizeOptions = {
   dialect: 'mysql',

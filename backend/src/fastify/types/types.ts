@@ -1,10 +1,12 @@
 import type { FastifyRequest, FastifyReply, FastifySchema } from 'fastify';
 
-type RequiredFields<T, K extends keyof T> = Required<Pick<T, K>> & Partial<Omit<T, K>>;
+type RequiredFields<T, K extends keyof T> = Required<Pick<T, K>> &
+  Partial<Omit<T, K>>;
 
 export type UserRole = 'admin' | 'user' | 'guest' | 'any';
 
-export type AllCrudMethods = 'getAll' | 'getById' | 'delete' | 'restore' | 'create' | 'update';
+export type AllCrudMethods =
+  'getAll' | 'getById' | 'delete' | 'restore' | 'create' | 'update';
 export type AuthMethods = 'me' | 'login' | 'logout';
 
 type Action = 'create' | 'read' | 'update' | 'delete' | 'restore';

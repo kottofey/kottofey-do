@@ -8,7 +8,12 @@ import {
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
-import { UserModel, PermissionModel, RolePermissionModel, UserRoleModel } from '@/sequelize/models';
+import {
+  UserModel,
+  PermissionModel,
+  RolePermissionModel,
+  UserRoleModel,
+} from '@/sequelize/models';
 
 @Table({ tableName: 'Roles', timestamps: true, underscored: true })
 export class RoleModel extends Model {

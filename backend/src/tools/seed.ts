@@ -43,15 +43,21 @@ async function getExecutedSeeders(): Promise<string[]> {
 /**
  * Выполнить сидер
  */
-async function executeSeeder(filepath: string, direction: 'up' | 'down' = 'up'): Promise<boolean> {
+async function executeSeeder(
+  filepath: string,
+  direction: 'up' | 'down' = 'up',
+): Promise<boolean> {
   try {
     const seederModule = (await import(path.join(SEEDERS_DIR, filepath))) as
       { default?: SeederModule } | SeederModule;
     const seeder: SeederModule =
-      (seederModule as { default?: SeederModule }).default ?? (seederModule as SeederModule);
+      (seederModule as { default?: SeederModule }).default ??
+      (seederModule as SeederModule);
 
     if (!seeder[direction]) {
-      console.log(`⚠️  Сидер ${path.basename(filepath)} не содержит метода ${direction}`);
+      console.log(
+        `⚠️  Сидер ${path.basename(filepath)} не содержит метода ${direction}`,
+      );
       return false;
     }
 
@@ -72,7 +78,10 @@ async function executeSeeder(filepath: string, direction: 'up' | 'down' = 'up'):
     console.log(`✅ Успешно: ${path.basename(filepath)}`);
     return true;
   } catch (error) {
-    console.error(`❌ Ошибка при выполнении ${path.basename(filepath)}:`, (error as Error).message);
+    console.error(
+      `❌ Ошибка при выполнении ${path.basename(filepath)}:`,
+      (error as Error).message,
+    );
     return false;
   }
 }
@@ -111,7 +120,10 @@ async function runAllNewSeeders() {
 /**
  * Выполнить конкретный сидер
  */
-async function runSpecificSeeder(filename: string, direction: 'up' | 'down' = 'up') {
+async function runSpecificSeeder(
+  filename: string,
+  direction: 'up' | 'down' = 'up',
+) {
   try {
     await fs.access(path.join(SEEDERS_DIR, filename));
   } catch {
@@ -147,7 +159,9 @@ async function rollbackAllSeeders() {
     }
   }
 
-  console.log(`✅ Откат сидеров, выполнено: ${executedSeeders.length.toString()}`);
+  console.log(
+    `✅ Откат сидеров, выполнено: ${executedSeeders.length.toString()}`,
+  );
 }
 
 // Настройка командной строки
@@ -185,7 +199,9 @@ program
 
     allSeeders.forEach(filepath => {
       const basename = path.basename(filepath);
-      const status = executedSeeders.includes(basename) ? '✅ Выполнен' : '⏳ Ожидает';
+      const status = executedSeeders.includes(basename)
+        ? '✅ Выполнен'
+        : '⏳ Ожидает';
       console.log(`${status} - ${basename}`);
     });
 
@@ -195,4 +211,6 @@ program
     );
   });
 
-await program.description('Утилита для управления сидерами').parseAsync(process.argv);
+await program
+  .description('Утилита для управления сидерами')
+  .parseAsync(process.argv);

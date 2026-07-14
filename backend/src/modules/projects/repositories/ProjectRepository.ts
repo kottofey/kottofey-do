@@ -22,7 +22,10 @@ export class ProjectRepository extends BaseRepository<ProjectModel> {
     return await (scopedModel as typeof ProjectModel).findAndCountAll(options);
   }
 
-  async findByPkWithParanoid(id: number, paranoid = true): Promise<ProjectModel | null> {
+  async findByPkWithParanoid(
+    id: number,
+    paranoid = true,
+  ): Promise<ProjectModel | null> {
     return await this.model.findByPk(id, { paranoid });
   }
 }

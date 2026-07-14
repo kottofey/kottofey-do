@@ -1,4 +1,10 @@
-import { Model, Table, Column, NotNull, PrimaryKey } from 'sequelize-typescript';
+import {
+  Model,
+  Table,
+  Column,
+  NotNull,
+  PrimaryKey,
+} from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
 @Table({ paranoid: false, timestamps: false, tableName: 'Seeders' })
@@ -9,6 +15,10 @@ export class SeederModel extends Model {
   declare filename: string;
 
   @NotNull
-  @Column({ type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW })
+  @Column({
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  })
   declare executed_at: string;
 }

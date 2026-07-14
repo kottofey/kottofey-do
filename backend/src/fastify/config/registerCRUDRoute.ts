@@ -1,7 +1,11 @@
 import type { RouteShorthandOptions } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 
-import { CommonQuery, RouteController, RouteControllerConfig } from '@/fastify/types';
+import {
+  CommonQuery,
+  RouteController,
+  RouteControllerConfig,
+} from '@/fastify/types';
 import { fastify } from '@/fastify';
 
 /**
@@ -9,7 +13,10 @@ import { fastify } from '@/fastify';
  * @param controller
  * @param routeName
  */
-export function registerCRUDRoute(controller: RouteController, routeName: string): number {
+export function registerCRUDRoute(
+  controller: RouteController,
+  routeName: string,
+): number {
   for (const [crudMethod, config] of Object.entries(
     controller as Record<keyof RouteController, RouteControllerConfig>,
   )) {
@@ -24,21 +31,26 @@ export function registerCRUDRoute(controller: RouteController, routeName: string
 
       switch (crudMethod) {
         case 'getAll':
-          fastify.withTypeProvider<ZodTypeProvider>().get<{ Querystring: CommonQuery }>(
-            `/${routeName}`,
-            {
-              ...opts,
-              onRequest: [fastify.authenticate, fastify.checkPermissions],
-            },
-            config.handler,
-          );
+          fastify
+            .withTypeProvider<ZodTypeProvider>()
+            .get<{ Querystring: CommonQuery }>(
+              `/${routeName}`,
+              {
+                ...opts,
+                onRequest: [fastify.authenticate, fastify.checkPermissions],
+              },
+              config.handler,
+            );
           break;
         case 'getById':
           fastify
             .withTypeProvider<ZodTypeProvider>()
             .get<{ Querystring: CommonQuery }>(
               `/${routeName}/:id`,
-              { ...opts, onRequest: [fastify.authenticate, fastify.checkPermissions] },
+              {
+                ...opts,
+                onRequest: [fastify.authenticate, fastify.checkPermissions],
+              },
               config.handler,
             );
           break;
@@ -59,7 +71,10 @@ export function registerCRUDRoute(controller: RouteController, routeName: string
             .withTypeProvider<ZodTypeProvider>()
             .delete<{ Querystring: CommonQuery }>(
               `/${routeName}/:id/:force?`,
-              { ...opts, onRequest: [fastify.authenticate, fastify.checkPermissions] },
+              {
+                ...opts,
+                onRequest: [fastify.authenticate, fastify.checkPermissions],
+              },
               config.handler,
             );
           break;
@@ -75,7 +90,10 @@ export function registerCRUDRoute(controller: RouteController, routeName: string
             .withTypeProvider<ZodTypeProvider>()
             .get<{ Querystring: CommonQuery }>(
               '/me',
-              { ...opts, onRequest: [fastify.authenticate, fastify.checkPermissions] },
+              {
+                ...opts,
+                onRequest: [fastify.authenticate, fastify.checkPermissions],
+              },
               config.handler,
             );
           break;
@@ -83,7 +101,11 @@ export function registerCRUDRoute(controller: RouteController, routeName: string
         case 'login':
           fastify
             .withTypeProvider<ZodTypeProvider>()
-            .post<{ Querystring: CommonQuery }>('/login', { ...opts }, config.handler);
+            .post<{ Querystring: CommonQuery }>(
+              '/login',
+              { ...opts },
+              config.handler,
+            );
           break;
 
         case 'logout':
@@ -91,7 +113,10 @@ export function registerCRUDRoute(controller: RouteController, routeName: string
             .withTypeProvider<ZodTypeProvider>()
             .delete<{ Querystring: CommonQuery }>(
               '/logout',
-              { ...opts, onRequest: [fastify.authenticate, fastify.checkPermissions] },
+              {
+                ...opts,
+                onRequest: [fastify.authenticate, fastify.checkPermissions],
+              },
               config.handler,
             );
           break;

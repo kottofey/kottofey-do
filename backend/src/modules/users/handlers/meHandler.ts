@@ -6,7 +6,10 @@ export async function meHandler(
   request: FastifyRequest,
   reply: FastifyReply,
 ): Promise<FastifyReply> {
-  const user = await userService.getById({ id: request.user.id, currentUser: request.user });
+  const user = await userService.getById({
+    id: request.user.id,
+    currentUser: request.user,
+  });
 
   if (!user) {
     return reply.code(401).send();

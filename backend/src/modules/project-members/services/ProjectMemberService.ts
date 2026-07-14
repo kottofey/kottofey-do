@@ -1,4 +1,10 @@
-import { Attributes, CreationAttributes, WhereOptions, Includeable, FindOptions } from 'sequelize';
+import {
+  Attributes,
+  CreationAttributes,
+  WhereOptions,
+  Includeable,
+  FindOptions,
+} from 'sequelize';
 
 import { ProjectMemberRepository } from '../repositories/ProjectMemberRepository';
 
@@ -40,18 +46,21 @@ export class ProjectMemberService extends BaseService {
       }
     }
 
-    const where: WhereOptions = allowedProjectIds ? { project_id: allowedProjectIds } : {};
+    const where: WhereOptions = allowedProjectIds
+      ? { project_id: allowedProjectIds }
+      : {};
 
-    const { rows, count } = await this.projectMemberRepository.findAndCountAllWithScopes(
-      {
-        where,
-        limit,
-        offset,
-        include,
-        distinct: true,
-      } as FindOptions,
-      scopes,
-    );
+    const { rows, count } =
+      await this.projectMemberRepository.findAndCountAllWithScopes(
+        {
+          where,
+          limit,
+          offset,
+          include,
+          distinct: true,
+        } as FindOptions,
+        scopes,
+      );
 
     return {
       data: rows,
@@ -79,8 +88,14 @@ export class ProjectMemberService extends BaseService {
     return member;
   }
 
-  async create(data: unknown, userId: number, isAdmin: boolean): Promise<ProjectMembersModel> {
-    const createData = data as { project_id: number } & CreationAttributes<ProjectMembersModel>;
+  async create(
+    data: unknown,
+    userId: number,
+    isAdmin: boolean,
+  ): Promise<ProjectMembersModel> {
+    const createData = data as {
+      project_id: number;
+    } & CreationAttributes<ProjectMembersModel>;
     if (!isAdmin) {
       const project = await ProjectModel.findByPk(createData.project_id);
       if (project?.owner_id !== userId) {
@@ -124,8 +139,15 @@ export class ProjectMemberService extends BaseService {
     return true;
   }
 
-  async restore(id: number, userId: number, isAdmin: boolean): Promise<ProjectMembersModel | null> {
-    const member = await this.projectMemberRepository.findByPkWithParanoid(id, false);
+  async restore(
+    id: number,
+    userId: number,
+    isAdmin: boolean,
+  ): Promise<ProjectMembersModel | null> {
+    const member = await this.projectMemberRepository.findByPkWithParanoid(
+      id,
+      false,
+    );
     if (!member) return null;
 
     if (!isAdmin) {

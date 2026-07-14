@@ -12,7 +12,11 @@ export async function createHandler(
   const isAdmin = roles.some(r => r === 'admin');
 
   try {
-    const createdProjectMember = await projectMemberService.create(request.body, userId, isAdmin);
+    const createdProjectMember = await projectMemberService.create(
+      request.body,
+      userId,
+      isAdmin,
+    );
 
     return await reply.status(201).send(createdProjectMember);
   } catch (error) {

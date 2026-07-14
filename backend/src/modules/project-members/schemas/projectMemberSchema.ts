@@ -10,10 +10,19 @@ import { metaSchema } from '@/fastify/schemas/metaSchema';
 import { AllCrudMethods, RouteControllerConfig } from '@/fastify/types';
 import { PROJECT_MEMBER_SCOPE_HANDLERS } from '@/sequelize/models/ProjectMembers';
 
-const scopeKeys = Object.keys(PROJECT_MEMBER_SCOPE_HANDLERS) as [string, ...string[]];
-const scopesSchema = z.array(z.enum(scopeKeys)).or(z.record(z.string(), z.unknown())).optional();
+const scopeKeys = Object.keys(PROJECT_MEMBER_SCOPE_HANDLERS) as [
+  string,
+  ...string[],
+];
+const scopesSchema = z
+  .array(z.enum(scopeKeys))
+  .or(z.record(z.string(), z.unknown()))
+  .optional();
 
-export const projectMemberSchema: Record<AllCrudMethods, RouteControllerConfig['schema']> = {
+export const projectMemberSchema: Record<
+  AllCrudMethods,
+  RouteControllerConfig['schema']
+> = {
   getAll: {
     querystring: z.object({
       includes: z.string().array().optional(),

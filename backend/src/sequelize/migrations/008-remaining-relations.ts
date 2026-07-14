@@ -2,7 +2,11 @@ import { DataTypes } from 'sequelize';
 import type { Sequelize } from 'sequelize-typescript';
 import type { Migration } from '@/lib/umzug';
 
-export const up: Migration = async ({ context: sequelize }: { context: Sequelize }) => {
+export const up: Migration = async ({
+  context: sequelize,
+}: {
+  context: Sequelize;
+}) => {
   const transaction = await sequelize.transaction();
 
   try {
@@ -83,7 +87,11 @@ export const up: Migration = async ({ context: sequelize }: { context: Sequelize
   }
 };
 
-export const down: Migration = async ({ context: sequelize }: { context: Sequelize }) => {
+export const down: Migration = async ({
+  context: sequelize,
+}: {
+  context: Sequelize;
+}) => {
   const transaction = await sequelize.transaction();
   try {
     // Projects
@@ -95,7 +103,9 @@ export const down: Migration = async ({ context: sequelize }: { context: Sequeli
     await sequelize
       .getQueryInterface()
       .removeConstraint('Tasks', 'tasks_projectFK', { transaction });
-    await sequelize.getQueryInterface().removeConstraint('Tasks', 'tasks_ownerFK', { transaction });
+    await sequelize
+      .getQueryInterface()
+      .removeConstraint('Tasks', 'tasks_ownerFK', { transaction });
 
     // ProjectMembers
     await sequelize

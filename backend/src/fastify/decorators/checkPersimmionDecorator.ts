@@ -3,7 +3,10 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { fastify } from '@/fastify';
 import { RoleModel, PermissionModel } from '@/sequelize/models';
 
-export async function checkPersimmionDecorator(request: FastifyRequest, reply: FastifyReply) {
+export async function checkPersimmionDecorator(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
   const { allowedRoles, requiredPermissions } = request.routeOptions.config as {
     allowedRoles?: string[];
     requiredPermissions?: string[];
@@ -54,7 +57,9 @@ export async function checkPersimmionDecorator(request: FastifyRequest, reply: F
       { requiredPermissions, userRoles },
       'Permission denied: missing required permissions',
     );
-    return reply.status(403).send({ message: 'Forbidden: Insufficient permissions' });
+    return reply
+      .status(403)
+      .send({ message: 'Forbidden: Insufficient permissions' });
   }
 
   // 2. Если прав не требуется, проверяем только роли
@@ -64,6 +69,11 @@ export async function checkPersimmionDecorator(request: FastifyRequest, reply: F
     return;
   }
 
-  fastify.log.warn({ allowedRoles, requiredPermissions, userRoles }, 'Permission denied');
-  return reply.status(403).send({ message: 'Forbidden: Insufficient permissions' });
+  fastify.log.warn(
+    { allowedRoles, requiredPermissions, userRoles },
+    'Permission denied',
+  );
+  return reply
+    .status(403)
+    .send({ message: 'Forbidden: Insufficient permissions' });
 }
