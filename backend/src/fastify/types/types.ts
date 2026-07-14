@@ -47,4 +47,5 @@ export interface CommonQuery {
   filter?: string;
   search?: string;
   sort?: string;
+  force?: boolean;
 }

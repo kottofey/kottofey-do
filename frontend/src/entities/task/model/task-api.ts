@@ -70,9 +70,15 @@ export async function createTask({
   });
 }
 
-export async function deleteTask({ id }: { id: number }): Promise<void> {
+export async function deleteTask({
+  id,
+  force,
+}: {
+  id: number;
+  force?: boolean;
+}): Promise<void> {
   return await useApi({
-    route: `tasks/${id}`,
+    route: `tasks/${id}${force ? '?force=true' : ''}`,
     method: httpMethod.DELETE,
   });
 }

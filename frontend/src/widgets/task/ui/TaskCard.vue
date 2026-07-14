@@ -7,6 +7,7 @@ import {
   RestoreIcon,
   TrashIcon,
   UnarchiveIcon,
+  ScullCrossBonesIcon,
 } from '@/shared/ui/icons';
 import {
   type ITask,
@@ -100,6 +101,23 @@ const { mutate: restoreTask } = useRestoreTaskMutation();
             </NIcon>
           </template>
         </NButton>
+
+        <NButton
+          v-if="task.deleted_at"
+          :focusable="false"
+          type="error"
+          @click.stop="
+            () => {
+              deleteTask({ id: task.id, force: true });
+            }
+          "
+        >
+          <template #icon>
+            <NIcon size="23">
+              <ScullCrossBonesIcon />
+            </NIcon>
+          </template>
+        </NButton>
       </NButtonGroup>
     </div>
 
@@ -122,7 +140,7 @@ const { mutate: restoreTask } = useRestoreTaskMutation();
 
 <style scoped lang="scss">
 .task-card {
-  border: 1px solid #fff;
+  border: 1px solid #a3a3a3;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
@@ -130,7 +148,7 @@ const { mutate: restoreTask } = useRestoreTaskMutation();
   border-radius: 5px;
   row-gap: 10px;
 
-  width: 300px;
+  width: 500px;
 
   &__owner {
     font-size: 10px;
@@ -153,8 +171,3 @@ const { mutate: restoreTask } = useRestoreTaskMutation();
   }
 }
 </style>
-
-<!--{ "id": 1, "project_id": 1, "owner_id": 1, "title": "Task 1 for user 1 project-->
-<!--1", "priority": "high", "sort_order": 1000, "is_done": false, "is_archived":-->
-<!--false, "created_at": 1783190290000, "updated_at": 1783190290000, "deleted_at":-->
-<!--null },-->

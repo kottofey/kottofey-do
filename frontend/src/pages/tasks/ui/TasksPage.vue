@@ -25,7 +25,7 @@ const newTask = ref('');
 const taskScopes = computed<ITaskScopes>(() => ({
   'tasks:onlyArchived': onlyArchived.value,
   'tasks:onlyDeleted': onlyDeleted.value,
-  'tasks:noArchived': !onlyArchived.value,
+  'tasks:noArchived': !onlyArchived.value && !onlyDeleted.value,
 }));
 
 // -----------------------------------------------------------------------------
@@ -49,12 +49,18 @@ const onCreateTask = () => {
   <TheLayout>
     <template #buttons-extra>
       <NCheckbox
+        :disabled="onlyDeleted"
         v-model:checked="onlyArchived"
         label="Архив"
       />
       <NCheckbox
         v-model:checked="onlyDeleted"
         label="Удаленные"
+        @change="
+          () => {
+            if (onlyArchived) onlyArchived = false;
+          }
+        "
       />
 
       <NInput
@@ -78,7 +84,7 @@ const onCreateTask = () => {
 
 <style scoped>
 .wrapper {
-  max-width: 900px;
+  max-width: 1000px;
   width: auto;
   height: auto;
   padding: 10px;
@@ -90,7 +96,6 @@ const onCreateTask = () => {
   align-items: center;
   justify-content: center;
 
-  border: 1px solid #000;
   margin: 0 auto;
 
   gap: 10px;

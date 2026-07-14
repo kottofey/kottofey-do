@@ -58,7 +58,7 @@ export function registerCRUDRoute(controller: RouteController, routeName: string
           fastify
             .withTypeProvider<ZodTypeProvider>()
             .delete<{ Querystring: CommonQuery }>(
-              `/${routeName}/:id`,
+              `/${routeName}/:id/:force?`,
               { ...opts, onRequest: [fastify.authenticate, fastify.checkPermissions] },
               config.handler,
             );

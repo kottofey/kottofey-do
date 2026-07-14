@@ -1,4 +1,4 @@
-import { Attributes, Includeable, FindOptions } from 'sequelize';
+import { Includeable, FindOptions } from 'sequelize';
 import { z } from 'zod';
 
 import { TaskRepository } from '../repositories/TaskRepository';
@@ -8,7 +8,6 @@ import { TaskModel } from '@/sequelize/models';
 import { CommonQuery } from '@/fastify/types';
 import { jwtUser } from '@/modules/users/schemas/partials';
 import { taskCreateSchema, taskUpdateSchema } from '@/modules/tasks/schemas/partials';
-import { fastify } from '@/fastify';
 
 export class TaskService extends BaseService {
   constructor(private taskRepository: TaskRepository) {
@@ -53,12 +52,14 @@ export class TaskService extends BaseService {
     id,
     currentUser,
     include,
+    otherOptions,
   }: {
     id: number;
     currentUser: z.infer<typeof jwtUser>;
     include?: Includeable | Includeable[];
+    otherOptions?: FindOptions<TaskModel>;
   }): Promise<TaskModel | null> {
-    const task = await this.taskRepository.findByPk(id, { include });
+    const task = await this.taskRepository.findByPk(id, { include, ...otherOptions });
 
     if (
       !task ||
@@ -103,15 +104,21 @@ export class TaskService extends BaseService {
   async delete({
     id,
     currentUser,
+    force,
   }: {
     id: number;
     currentUser: z.infer<typeof jwtUser>;
+    force: boolean;
   }): Promise<boolean> {
-    const task = await this.getById({ id, currentUser });
+    const task = await this.getById({ id, currentUser, otherOptions: { paranoid: !force } });
 
     if (!task) return false;
 
-    await task.destroy();
+    if (force) {
+      await task.destroy({ force });
+    } else {
+      await task.destroy();
+    }
     return true;
   }
 

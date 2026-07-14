@@ -70,6 +70,7 @@ export const taskSchema: Record<AllCrudMethods, RouteControllerConfig['schema']>
   delete: {
     params: z.object({
       id: z.coerce.number(),
+      force: z.boolean().optional(),
     }),
     response: {},
   },

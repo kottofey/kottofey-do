@@ -131,7 +131,8 @@ export const useDeleteTaskMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id }: { id: number }) => deleteTask({ id }),
+    mutationFn: ({ id, force = false }: { id: number; force: boolean }) =>
+      deleteTask({ id, force }),
     onSuccess: async (_data, variables) => {
       await queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
       await queryClient.invalidateQueries({

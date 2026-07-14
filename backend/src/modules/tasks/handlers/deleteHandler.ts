@@ -11,7 +11,11 @@ export async function deleteHandler(
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
 
-  const deleted = await taskService.delete({ id, currentUser: request.user });
+  const deleted = await taskService.delete({
+    id,
+    currentUser: request.user,
+    force: Boolean(request.query.force),
+  });
 
   if (!deleted) {
     return reply.status(404).send({
@@ -20,6 +24,6 @@ export async function deleteHandler(
   }
 
   return reply.status(200).send({
-    message: `Deleted task id ${id.toString()}`,
+    message: `${request.query.force ? 'Killed' : 'Deleted'} task id ${id.toString()}`,
   });
 }
