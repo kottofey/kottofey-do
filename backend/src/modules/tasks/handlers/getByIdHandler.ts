@@ -10,10 +10,12 @@ export async function getByIdHandler(
   reply: FastifyReply,
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
-  const { roles, id: userId } = request.user;
-  const isAdmin = roles.some(r => r === 'admin');
 
-  const task = await taskService.getById(id, userId, isAdmin, parseIncludes(request));
+  const task = await taskService.getById({
+    id,
+    currentUser: request.user,
+    include: parseIncludes(request),
+  });
 
   if (!task) {
     return reply.status(404).send({ message: 'Task not found' });

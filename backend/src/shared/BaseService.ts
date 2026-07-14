@@ -13,7 +13,21 @@ export abstract class BaseService {
     return roles.some(r => r === 'admin');
   }
 
-  isAllowed(recordOwnerId: number, currentUserId: number, currentUserRoles: string[]) {
+  /**
+   * Разрешено, если админ или владелец сущности
+   * @param recordOwnerId ID владельца сущности
+   * @param currentUserId ID запрашивающего юзера
+   * @param currentUserRoles Массив ролей запрашивающего юзера
+   */
+  isAllowed({
+    recordOwnerId,
+    currentUserId,
+    currentUserRoles,
+  }: {
+    recordOwnerId: number;
+    currentUserId: number;
+    currentUserRoles: string[];
+  }) {
     return this.isAdmin(currentUserRoles) || recordOwnerId === currentUserId;
   }
 }

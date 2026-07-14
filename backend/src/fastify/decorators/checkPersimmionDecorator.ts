@@ -12,6 +12,7 @@ export async function checkPersimmionDecorator(request: FastifyRequest, reply: F
   fastify.log.info({ allowedRoles, requiredPermissions }, 'Checking permissions');
 
   if (!allowedRoles || allowedRoles.includes('any')) {
+    fastify.log.info('Permissions granted (15)');
     return;
   }
 
@@ -21,6 +22,7 @@ export async function checkPersimmionDecorator(request: FastifyRequest, reply: F
 
   // Admin has all permissions
   if (userRoles.includes('admin')) {
+    fastify.log.info('Permissions granted (25)');
     return;
   }
 
@@ -39,6 +41,7 @@ export async function checkPersimmionDecorator(request: FastifyRequest, reply: F
 
     // Если найдены роли пользователя, обладающие требуемыми правами
     if (rolesWithPermissions.length > 0) {
+      fastify.log.info('Permissions granted (44)');
       return;
     }
 
@@ -54,6 +57,7 @@ export async function checkPersimmionDecorator(request: FastifyRequest, reply: F
   // 2. Если прав не требуется, проверяем только роли
   const hasRole = allowedRoles.some(role => userRoles.includes(role));
   if (hasRole) {
+    fastify.log.info('Permissions granted (60)');
     return;
   }
 

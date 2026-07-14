@@ -63,7 +63,14 @@ export class UserService extends BaseService {
   }): Promise<UserModel | null> {
     const foundUser = await this.userRepository.findByPk(id, { include });
 
-    if (!foundUser || !this.isAllowed(id, currentUser.id, currentUser.roles)) {
+    if (
+      !foundUser ||
+      !this.isAllowed({
+        currentUserId: currentUser.id,
+        currentUserRoles: currentUser.roles,
+        recordOwnerId: id,
+      })
+    ) {
       return null;
     }
 
@@ -122,7 +129,13 @@ export class UserService extends BaseService {
   }): Promise<UserModel | null> {
     const user = await this.getById({ id, currentUser });
 
-    if (!this.isAllowed(id, currentUser.id, currentUser.roles)) {
+    if (
+      !this.isAllowed({
+        currentUserId: currentUser.id,
+        currentUserRoles: currentUser.roles,
+        recordOwnerId: id,
+      })
+    ) {
       return null;
     }
 

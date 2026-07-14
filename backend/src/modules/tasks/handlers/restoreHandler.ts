@@ -10,13 +10,8 @@ export async function restoreHandler(
   reply: FastifyReply,
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
-  const {
-    user: { roles, id: userId },
-  } = request;
 
-  const isAdmin = roles.some(r => r === 'admin');
-
-  const restoredTask = await taskService.restore(id, userId, isAdmin);
+  const restoredTask = await taskService.restore({ id, currentUser: request.user });
 
   if (!restoredTask) {
     return reply.status(404).send({

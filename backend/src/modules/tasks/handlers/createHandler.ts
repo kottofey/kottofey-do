@@ -13,8 +13,8 @@ export async function createHandler(
   const newTask = request.body as z.infer<typeof taskCreateSchema>;
 
   const createdTask = await taskService.create({
-    ...newTask,
-    owner_id: request.user.id,
+    data: newTask,
+    currentUser: request.user,
   });
 
   return reply.status(201).send(createdTask);
