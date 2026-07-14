@@ -10,14 +10,15 @@ export async function restoreHandler(
   reply: FastifyReply,
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
-  const { roles, id: userId } = request.user;
-  const isAdmin = roles.some(r => r === 'admin');
 
-  const restoredProject = await projectService.restore(id, userId, isAdmin);
+  const restoredProject = await projectService.restore({
+    id,
+    currentUser: request.user,
+  });
 
   if (!restoredProject) {
     return reply.status(404).send({
-      message: `Project id ${id.toString()} not found`,
+      message: `Project id ${id.toString()} not restored`,
     });
   }
 

@@ -10,10 +10,12 @@ export async function getByIdHandler(
   reply: FastifyReply,
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
-  const { roles, id: userId } = request.user;
-  const isAdmin = roles.some(r => r === 'admin');
 
-  const project = await projectService.getById(id, userId, isAdmin, parseIncludes(request));
+  const project = await projectService.getById({
+    id,
+    currentUser: request.user,
+    include: parseIncludes(request),
+  });
 
   if (!project) {
     return reply.status(404).send({ message: 'Project not found' });

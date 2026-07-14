@@ -1,24 +1,23 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import { z } from 'zod';
 
 import { projectService } from '..';
 
 import type { CommonQuery } from '@/fastify/types';
 import { getIdFromParams } from '@/fastify/helpers';
+import { projectUpdateSchema } from '@/modules/projects/schemas/partials';
 
 export async function updateHandler(
   request: FastifyRequest<{ Querystring: CommonQuery }>,
   reply: FastifyReply,
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
-  const { roles, id: userId } = request.user;
-  const isAdmin = roles.some(r => r === 'admin');
 
-  const updatedProject = await projectService.update(
+  const updatedProject = await projectService.update({
     id,
-    request.body as Record<string, unknown>,
-    userId,
-    isAdmin,
-  );
+    currentUser: request.user,
+    data: request.body as z.infer<typeof projectUpdateSchema>,
+  });
 
   if (!updatedProject) {
     return reply.status(404).send({

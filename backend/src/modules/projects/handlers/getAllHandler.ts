@@ -13,15 +13,11 @@ export async function getAllHandler(
     query: { page = 1, limit = 10, scopes },
   } = request;
 
-  const userId = request.user.id;
-  const isAdmin = request.user.roles.some(r => r === 'admin');
-
   const result = await projectService.getAll({
     page,
     limit,
     scopes,
-    userId,
-    isAdmin,
+    currentUser: request.user,
     include: parseIncludes(request),
   });
 

@@ -13,8 +13,8 @@ export async function createHandler(
   const newProject = request.body as z.infer<typeof projectCreateSchema>;
 
   const createdProject = await projectService.create({
-    ...newProject,
-    owner_id: request.user.id,
+    data: newProject,
+    currentUser: request.user,
   });
 
   return reply.status(201).send(createdProject);

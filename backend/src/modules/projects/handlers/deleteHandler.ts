@@ -10,10 +10,11 @@ export async function deleteHandler(
   reply: FastifyReply,
 ): Promise<FastifyReply> {
   const id = getIdFromParams(request);
-  const { roles, id: userId } = request.user;
-  const isAdmin = roles.some(r => r === 'admin');
 
-  const deleted = await projectService.delete(id, userId, isAdmin);
+  const deleted = await projectService.delete({
+    id,
+    currentUser: request.user,
+  });
 
   if (!deleted) {
     return reply.status(404).send({
