@@ -1,0 +1,22 @@
+meta {
+  name: Attach Project
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{BASE_URL}}/tasks/9/attach-project
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "New Task updated z"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
