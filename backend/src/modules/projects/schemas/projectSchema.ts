@@ -7,7 +7,7 @@ import {
 } from './partials';
 
 import { metaSchema } from '@/fastify/schemas/metaSchema';
-import { AllCrudMethods, RouteControllerConfig } from '@/fastify/types';
+import { RouteSchema } from '@/fastify/types';
 import { PROJECT_SCOPE_HANDLERS } from '@/sequelize/models/Project';
 
 const scopeKeys = Object.keys(PROJECT_SCOPE_HANDLERS) as [string, ...string[]];
@@ -16,10 +16,7 @@ const scopesSchema = z
   .or(z.record(z.string(), z.unknown()))
   .optional();
 
-export const projectSchema: Record<
-  AllCrudMethods,
-  RouteControllerConfig['schema']
-> = {
+export const projectSchema: RouteSchema = {
   getAll: {
     querystring: z.object({
       includes: z.string().array().optional(),

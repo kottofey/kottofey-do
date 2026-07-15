@@ -198,6 +198,7 @@ export class UserService extends BaseService {
     const { email = '', password = '' } = request.body as FastifyRequest<{
       Body: { email?: string; password?: string };
     }>;
+
     const validatedUser = await this.validateUser(email, password);
 
     if (!validatedUser) return Promise.resolve(null);

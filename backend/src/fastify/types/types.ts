@@ -5,18 +5,23 @@ type RequiredFields<T, K extends keyof T> = Required<Pick<T, K>> &
 
 export type UserRole = 'admin' | 'user' | 'guest' | 'any';
 
+export type HttpMethods = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+
 export type AllCrudMethods =
   'getAll' | 'getById' | 'delete' | 'restore' | 'create' | 'update';
+
 export type AuthMethods = 'me' | 'login' | 'logout';
 
 type Action = 'create' | 'read' | 'update' | 'delete' | 'restore';
 type Permission = `${string}:${Action}`;
 
-export interface User {
-  id: number;
-  name: string;
-  role: UserRole;
-}
+export type RouteSchema<T extends string = never> = Record<
+  AllCrudMethods,
+  RequiredFields<FastifySchema, 'response'>
+> &
+  ([T] extends [never]
+    ? object
+    : Record<T, RequiredFields<FastifySchema, 'response'>>);
 
 export interface RouteControllerConfig {
   handler: (
@@ -26,20 +31,14 @@ export interface RouteControllerConfig {
   schema: RequiredFields<FastifySchema, 'response'>;
   allowedRoles: UserRole[];
   requiredPermissions: Permission[];
+  method?: HttpMethods;
+  url?: string;
 }
 
-export interface RouteController {
-  getAll?: RouteControllerConfig;
-  getById?: RouteControllerConfig;
-  create?: RouteControllerConfig;
-  update?: RouteControllerConfig;
-  delete?: RouteControllerConfig;
-  restore?: RouteControllerConfig;
-
-  me?: RouteControllerConfig;
-  login?: RouteControllerConfig;
-  logout?: RouteControllerConfig;
-}
+export type RouteController<T extends string = never> = Partial<
+  Record<AllCrudMethods, RouteControllerConfig>
+> &
+  ([T] extends [never] ? object : Record<T, RouteControllerConfig>);
 
 export interface CommonQuery {
   includes?: string[];

@@ -9,8 +9,9 @@ import {
 import { taskSchema } from './schemas/taskSchema';
 
 import type { RouteController } from '@/fastify/types';
+import { attachProjectHandler } from '@/modules/tasks/handlers/attachProjectHandler';
 
-export const tasksController: RouteController = {
+export const tasksController: RouteController<'attachProject'> = {
   // -----------------------------------------------------------------------------
   // Get All Items
   // -----------------------------------------------------------------------------
@@ -69,5 +70,14 @@ export const tasksController: RouteController = {
     schema: taskSchema.restore,
     allowedRoles: ['admin'],
     requiredPermissions: ['task:restore'],
+  },
+
+  attachProject: {
+    method: 'PUT',
+    url: '/:id/attach-project',
+    handler: attachProjectHandler,
+    schema: taskSchema.attachProject,
+    allowedRoles: ['admin', 'user'],
+    requiredPermissions: ['task:update'],
   },
 };

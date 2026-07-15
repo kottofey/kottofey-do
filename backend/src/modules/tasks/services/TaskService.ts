@@ -160,4 +160,18 @@ export class TaskService extends BaseService {
     await task.restore();
     return task;
   }
+
+  async attachProject({
+    task_id,
+    project_id,
+    currentUser,
+  }: {
+    task_id: number;
+    project_id: number;
+    currentUser: z.infer<typeof jwtUser>;
+  }): Promise<void> {
+    const currentTask = await this.getById({ id: task_id, currentUser });
+
+    await currentTask?.update({ project_id });
+  }
 }

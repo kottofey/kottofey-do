@@ -8,11 +8,7 @@ import {
 } from './partials';
 
 import { metaSchema } from '@/fastify/schemas/metaSchema';
-import {
-  AllCrudMethods,
-  AuthMethods,
-  RouteControllerConfig,
-} from '@/fastify/types';
+import { RouteSchema } from '@/fastify/types';
 import { USER_SCOPE_HANDLERS } from '@/sequelize/models/User';
 
 const scopeKeys = Object.keys(USER_SCOPE_HANDLERS) as [string, ...string[]];
@@ -21,10 +17,7 @@ const scopesSchema = z
   .or(z.record(z.string(), z.unknown()))
   .optional();
 
-export const userSchema: Record<
-  AllCrudMethods | AuthMethods,
-  RouteControllerConfig['schema']
-> = {
+export const userSchema: RouteSchema<'me' | 'login' | 'logout'> = {
   getAll: {
     querystring: z.object({
       includes: z.string().array().optional(),
