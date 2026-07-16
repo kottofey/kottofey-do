@@ -294,4 +294,28 @@ export class UserService extends BaseService {
       refreshToken,
     };
   }
+
+  async getMe({
+    request,
+    reply,
+  }: {
+    request: FastifyRequest;
+    reply: FastifyReply;
+  }): Promise<z.infer<typeof jwtUser> | null> {
+    const user = await this.getById({
+      id: request.user.id,
+      currentUser: request.user,
+    });
+
+    if (user) {
+      const { roles, id, email } = user;
+
+      return {
+        id,
+        email,
+        roles: roles.map(r => r.name),
+      };
+    }
+    return null;
+  }
 }
