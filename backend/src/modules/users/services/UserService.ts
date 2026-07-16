@@ -297,7 +297,6 @@ export class UserService extends BaseService {
 
   async getMe({
     request,
-    reply,
   }: {
     request: FastifyRequest;
     reply: FastifyReply;

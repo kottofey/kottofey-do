@@ -3,7 +3,7 @@ import type { FastifyRequest, FastifyReply, FastifySchema } from 'fastify';
 type RequiredFields<T, K extends keyof T> = Required<Pick<T, K>> &
   Partial<Omit<T, K>>;
 
-export type UserRole = 'admin' | 'user' | 'guest' | 'any';
+// export type UserRole = 'admin' | 'user' | 'guest' | 'any';
 
 export type HttpMethods = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -29,8 +29,8 @@ export interface RouteControllerConfig {
     reply: FastifyReply,
   ) => Promise<FastifyReply>;
   schema: RequiredFields<FastifySchema, 'response'>;
-  allowedRoles: UserRole[];
   requiredPermissions: Permission[];
+  isPublic?: boolean;
   method?: HttpMethods;
   url?: string;
 }

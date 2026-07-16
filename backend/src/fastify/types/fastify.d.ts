@@ -1,12 +1,10 @@
 /* eslint-disable */
-import { FastifyContextConfig, FastifyReply, FastifyRequest } from 'fastify';
-import { FastifyJwtNamespace } from '@fastify/jwt';
 import { UserRoles } from './types';
 
 declare module 'fastify' {
   interface FastifyContextConfig {
-    allowedRoles?: UserRoles;
     requiredPermissions?: string[];
+    isPublic?: boolean;
   }
 
   interface FastifyRequest {

@@ -18,7 +18,6 @@ export const tasksController: RouteController<'attachProject'> = {
   getAll: {
     handler: getAllHandler,
     schema: taskSchema.getAll,
-    allowedRoles: ['admin'],
     requiredPermissions: ['task:read'],
   },
 
@@ -28,7 +27,6 @@ export const tasksController: RouteController<'attachProject'> = {
   getById: {
     handler: getByIdHandler,
     schema: taskSchema.getById,
-    allowedRoles: ['admin'],
     requiredPermissions: ['task:read'],
   },
 
@@ -38,7 +36,6 @@ export const tasksController: RouteController<'attachProject'> = {
   create: {
     handler: createHandler,
     schema: taskSchema.create,
-    allowedRoles: ['admin'],
     requiredPermissions: ['task:create'],
   },
 
@@ -48,7 +45,6 @@ export const tasksController: RouteController<'attachProject'> = {
   update: {
     handler: updateHandler,
     schema: taskSchema.update,
-    allowedRoles: ['admin'],
     requiredPermissions: ['task:update'],
   },
 
@@ -58,7 +54,6 @@ export const tasksController: RouteController<'attachProject'> = {
   delete: {
     handler: deleteHandler,
     schema: taskSchema.delete,
-    allowedRoles: ['admin'],
     requiredPermissions: ['task:delete'],
   },
 
@@ -68,7 +63,6 @@ export const tasksController: RouteController<'attachProject'> = {
   restore: {
     handler: restoreHandler,
     schema: taskSchema.restore,
-    allowedRoles: ['admin'],
     requiredPermissions: ['task:restore'],
   },
 
@@ -77,7 +71,6 @@ export const tasksController: RouteController<'attachProject'> = {
     url: '/:id/attach-project',
     handler: attachProjectHandler,
     schema: taskSchema.attachProject,
-    allowedRoles: ['admin', 'user'],
     requiredPermissions: ['task:update'],
   },
 };

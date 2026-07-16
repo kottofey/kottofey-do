@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import fastifyJwt from '@fastify/jwt';
-import fastifyCookie from '@fastify/cookie';
+import { fastifyCookie } from '@fastify/cookie';
 import ms, { StringValue } from 'ms';
 
 export function configCookiesAndJwt(fastify: FastifyInstance) {

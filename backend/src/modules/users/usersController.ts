@@ -20,7 +20,6 @@ export const usersController: RouteController<'me' | 'login' | 'logout'> = {
   getAll: {
     handler: getAllHandler,
     schema: userSchema.getAll,
-    allowedRoles: ['admin'],
     requiredPermissions: ['user:read'],
   },
 
@@ -30,7 +29,6 @@ export const usersController: RouteController<'me' | 'login' | 'logout'> = {
   getById: {
     handler: getByIdHandler,
     schema: userSchema.getById,
-    allowedRoles: ['admin'],
     requiredPermissions: ['user:read'],
   },
 
@@ -40,7 +38,6 @@ export const usersController: RouteController<'me' | 'login' | 'logout'> = {
   create: {
     handler: createHandler,
     schema: userSchema.create,
-    allowedRoles: ['admin'],
     requiredPermissions: ['user:create'],
   },
 
@@ -50,7 +47,6 @@ export const usersController: RouteController<'me' | 'login' | 'logout'> = {
   update: {
     handler: updateHandler,
     schema: userSchema.update,
-    allowedRoles: ['admin', 'user'],
     requiredPermissions: ['user:update'],
   },
 
@@ -60,7 +56,6 @@ export const usersController: RouteController<'me' | 'login' | 'logout'> = {
   delete: {
     handler: deleteHandler,
     schema: userSchema.delete,
-    allowedRoles: ['admin'],
     requiredPermissions: ['user:delete'],
   },
 
@@ -70,17 +65,19 @@ export const usersController: RouteController<'me' | 'login' | 'logout'> = {
   restore: {
     handler: restoreHandler,
     schema: userSchema.restore,
-    allowedRoles: ['admin'],
     requiredPermissions: ['user:restore'],
   },
+
+  // -----------------------------------------------------------------------------
+  // Auth module
+  // -----------------------------------------------------------------------------
 
   me: {
     method: 'GET',
     url: 'me',
     handler: meHandler,
     schema: userSchema.me,
-    allowedRoles: ['any'],
-    requiredPermissions: [],
+    requiredPermissions: ['user:read'],
   },
 
   login: {
@@ -88,8 +85,8 @@ export const usersController: RouteController<'me' | 'login' | 'logout'> = {
     url: 'login',
     handler: loginHandler,
     schema: userSchema.login,
-    allowedRoles: [],
     requiredPermissions: [],
+    isPublic: true,
   },
 
   logout: {
@@ -97,7 +94,6 @@ export const usersController: RouteController<'me' | 'login' | 'logout'> = {
     url: 'logout',
     handler: logoutHandler,
     schema: userSchema.logout,
-    allowedRoles: ['any'],
-    requiredPermissions: [],
+    requiredPermissions: ['user:read'],
   },
 };

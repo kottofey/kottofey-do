@@ -12,5 +12,3 @@ const projectMemberRepository = new ProjectMemberRepository();
 export const projectMemberService = new ProjectMemberService(
   projectMemberRepository,
 );
-
-// export { projectMembersController } from './projectMembersController';
