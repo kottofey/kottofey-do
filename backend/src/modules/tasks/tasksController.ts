@@ -5,13 +5,16 @@ import {
   updateHandler,
   deleteHandler,
   restoreHandler,
+  removeProjectHandler,
+  attachProjectHandler,
 } from './handlers';
 import { taskSchema } from './schemas/taskSchema';
 
 import type { RouteController } from '@/fastify/types';
-import { attachProjectHandler } from '@/modules/tasks/handlers/attachProjectHandler';
 
-export const tasksController: RouteController<'attachProject'> = {
+export const tasksController: RouteController<
+  'attachProject' | 'removeProject'
+> = {
   // -----------------------------------------------------------------------------
   // Get All Items
   // -----------------------------------------------------------------------------
@@ -68,9 +71,17 @@ export const tasksController: RouteController<'attachProject'> = {
 
   attachProject: {
     method: 'PUT',
-    url: '/:id/attach-project',
+    url: '/:id/attach-project/:projectId',
     handler: attachProjectHandler,
     schema: taskSchema.attachProject,
+    requiredPermissions: ['task:update'],
+  },
+
+  removeProject: {
+    method: 'PUT',
+    url: '/:id/remove-project',
+    handler: removeProjectHandler,
+    schema: taskSchema.removeProject,
     requiredPermissions: ['task:update'],
   },
 };

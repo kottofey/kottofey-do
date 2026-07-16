@@ -4,18 +4,15 @@ import type { CommonQuery } from '@/fastify/types';
 import { taskService } from '@/modules/tasks';
 import { getIdFromParams } from '@/fastify/helpers';
 
-export async function attachProjectHandler(
+export async function removeProjectHandler(
   request: FastifyRequest<{
     Querystring: CommonQuery;
   }>,
   reply: FastifyReply,
 ): Promise<FastifyReply> {
-  const { projectId } = request.params as { projectId: unknown };
   const taskId = getIdFromParams(request);
-
-  await taskService.attachProject({
+  await taskService.removeProject({
     taskId,
-    projectId: Number(projectId),
     currentUser: request.user,
   });
 

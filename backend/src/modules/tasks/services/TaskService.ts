@@ -162,16 +162,28 @@ export class TaskService extends BaseService {
   }
 
   async attachProject({
-    task_id,
-    project_id,
+    taskId,
+    projectId,
     currentUser,
   }: {
-    task_id: number;
-    project_id: number;
+    taskId: number;
+    projectId: number;
     currentUser: z.infer<typeof jwtUser>;
   }): Promise<void> {
-    const currentTask = await this.getById({ id: task_id, currentUser });
+    const currentTask = await this.getById({ id: taskId, currentUser });
 
-    await currentTask?.update({ project_id });
+    await currentTask?.update({ project_id: projectId });
+  }
+
+  async removeProject({
+    taskId,
+    currentUser,
+  }: {
+    taskId: number;
+    currentUser: z.infer<typeof jwtUser>;
+  }): Promise<void> {
+    const currentTask = await this.getById({ id: taskId, currentUser });
+
+    await currentTask?.update({ project_id: null });
   }
 }

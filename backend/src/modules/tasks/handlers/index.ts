@@ -4,3 +4,5 @@ export { createHandler } from './createHandler';
 export { updateHandler } from './updateHandler';
 export { deleteHandler } from './deleteHandler';
 export { restoreHandler } from './restoreHandler';
+export { attachProjectHandler } from './attachProjectHandler';
+export { removeProjectHandler } from './removeProjectHandler';

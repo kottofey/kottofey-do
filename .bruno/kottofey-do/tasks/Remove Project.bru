@@ -1,0 +1,22 @@
+meta {
+  name: Remove Project
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{BASE_URL}}/tasks/5/attach-project/10
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "New Task updated z"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

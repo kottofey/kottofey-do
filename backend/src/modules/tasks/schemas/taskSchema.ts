@@ -12,7 +12,7 @@ const scopesSchema = z
   .or(z.record(z.string(), z.unknown()))
   .optional();
 
-export const taskSchema: RouteSchema<'attachProject'> = {
+export const taskSchema: RouteSchema<'attachProject' | 'removeProject'> = {
   getAll: {
     querystring: z.object({
       includes: z.string().array().optional(),
@@ -86,6 +86,14 @@ export const taskSchema: RouteSchema<'attachProject'> = {
   },
 
   attachProject: {
+    params: z.object({
+      id: z.coerce.number(),
+      projectId: z.coerce.number(),
+    }),
+    response: {},
+  },
+
+  removeProject: {
     params: z.object({
       id: z.coerce.number(),
     }),
