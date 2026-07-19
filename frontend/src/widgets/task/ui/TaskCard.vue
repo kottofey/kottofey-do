@@ -130,7 +130,9 @@ const { mutate: restoreTask } = useRestoreTaskMutation();
     />
 
     <div class="task-card__header">
-      <p class="task-card__owner">Владелец: {{ task.owner.email }}</p>
+      <p class="task-card__owner">
+        Владелец: {{ task.owner?.email ?? 'Удалён' }}
+      </p>
       <p class="task-card__owner">
         {{ dayjs(task.created_at).format('DD MMM YYYY HH:mm') }}
       </p>

@@ -21,7 +21,7 @@ export default function useAuth() {
   }) => {
     try {
       const result = await useApi<IAuthResponse>({
-        route: 'login',
+        route: 'users/login',
         method: httpMethod.POST,
         body: JSON.stringify({ email, password }),
       });
@@ -51,7 +51,7 @@ export default function useAuth() {
   const logout = async () => {
     try {
       await useApi<IAuthResponse>({
-        route: 'logout',
+        route: 'users/logout',
         method: httpMethod.DELETE,
       });
     } catch (e) {
@@ -66,7 +66,7 @@ export default function useAuth() {
     const authStore = useAuthStore();
     try {
       const me = await useApi<Partial<IUser>>({
-        route: 'me',
+        route: 'users/me',
         method: httpMethod.GET,
       });
 

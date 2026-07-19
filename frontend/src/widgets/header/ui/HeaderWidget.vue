@@ -63,6 +63,13 @@ const { user } = useAuthStore();
       >
         Задачи
       </RouterLink>
+
+      <RouterLink
+        :to="{ name: 'users.show' }"
+        class="link"
+      >
+        Юзеры
+      </RouterLink>
     </div>
 
     <!--    <div-->

@@ -13,34 +13,17 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/tasks'),
     meta: {},
   },
-  // {
-  //   path: '/drugstores',
-  //   name: 'drugstores.show',
-  //   component: () => import('@/pages/drugstores'),
-  //   meta: {},
-  // },
-  // {
-  //   path: '/doctors',
-  //   name: 'doctors.show',
-  //   component: () => import('@/pages/doctors'),
-  //   meta: {},
-  // },
-  // {
-  //   path: '/clients',
-  //   name: 'clients.show',
-  //   component: () => import('@/pages/clients'),
-  //   meta: {},
-  // },
-  // {
-  //   path: '/staging-changes',
-  //   name: 'staging-changes.show',
-  //   component: () => import('@/pages/staging-changes'),
-  //   meta: {},
-  // },
+
   {
     path: '/login',
     name: 'login.show',
     component: () => import('@/pages/login'),
+  },
+  {
+    path: '/users',
+    name: 'users.show',
+    component: () => import('@/pages/users'),
+    meta: {},
   },
 ];
 

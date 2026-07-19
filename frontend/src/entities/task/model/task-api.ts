@@ -15,7 +15,7 @@ export interface ITask {
   is_archived: boolean;
 
   project: object;
-  owner: Partial<IUser>;
+  owner?: Partial<IUser>;
 
   created_at: number;
   updated_at: number;

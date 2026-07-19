@@ -56,7 +56,7 @@ const onCreateTask = () => {
       <NCheckbox
         v-model:checked="onlyDeleted"
         label="Удаленные"
-        @change="
+        @update:checked="
           () => {
             if (onlyArchived) onlyArchived = false;
           }
