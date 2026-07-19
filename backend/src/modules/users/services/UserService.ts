@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import { UserRepository } from '../repositories/UserRepository';
 import {
   jwtUser,
+  userBaseSchema,
   userCreateSchema,
   userUpdateSchema,
 } from '../schemas/partials';
@@ -16,6 +17,7 @@ import { BaseService } from '@/shared';
 import { RefreshTokenModel, RoleModel, UserModel } from '@/sequelize/models';
 import { CommonQuery } from '@/fastify/types';
 import { sequelize } from '@/sequelize';
+import { userSchema } from '@/modules/users/schemas/userSchema';
 
 export class UserService extends BaseService {
   constructor(private userRepository: UserRepository) {
@@ -52,8 +54,17 @@ export class UserService extends BaseService {
       scopes,
     );
 
+    const users = rows.map(row => {
+      const json: z.infer<typeof userBaseSchema> = row.toJSON();
+      const { roles, ...user } = json;
+      return {
+        ...user,
+        roles: roles.map(r => r.name),
+      };
+    });
+
     return {
-      data: rows,
+      data: users,
       meta: this.paginate(count, limit, page),
     };
   }

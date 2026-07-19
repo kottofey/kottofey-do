@@ -5,13 +5,13 @@ meta {
 }
 
 get {
-  url: {{BASE_URL}}/users?includes[]=Projects:Members
+  url: {{BASE_URL}}/users
   body: none
   auth: inherit
 }
 
 params:query {
-  includes[]: Projects:Members
+  ~includes[]: Projects:Members
   ~includes[]: Tasks
   ~includes[]: Roles
   ~scopes[byOwner]: 2

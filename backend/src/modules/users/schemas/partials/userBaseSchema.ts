@@ -15,10 +15,7 @@ export const userBaseSchema = z.object({
 
   projects: z.array(projectShortSchema).nullish(),
   tasks: z.array(taskShortSchema).nullish(),
-  roles: roleSchema
-    .array()
-    .transform(roles => roles.map(r => r.name))
-    .or(z.string().array()),
+  roles: roleSchema.array(),
 
   created_at: z.number(),
   updated_at: z.number(),

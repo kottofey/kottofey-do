@@ -12,7 +12,7 @@ import {
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
-import { isAdmin } from './Scopes';
+import { deletedOnly } from './Scopes';
 
 import {
   TaskModel,
@@ -30,7 +30,7 @@ import {
   include: { model: RoleModel, as: 'roles' },
 }))
 @Scopes(() => ({
-  isAdmin,
+  'users:deletedOnly': deletedOnly,
 }))
 @Table({ paranoid: true, tableName: 'Users' })
 export class UserModel extends Model {

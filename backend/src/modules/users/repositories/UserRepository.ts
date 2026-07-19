@@ -22,6 +22,7 @@ export class UserRepository extends BaseRepository<UserModel> {
     return await (scopedModel as typeof UserModel).findAndCountAll({
       ...options,
       distinct: true,
+      include: ['roles'],
     });
   }
 

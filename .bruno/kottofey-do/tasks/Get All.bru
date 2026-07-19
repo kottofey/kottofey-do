@@ -5,12 +5,13 @@ meta {
 }
 
 get {
-  url: {{BASE_URL}}/tasks
+  url: {{BASE_URL}}/tasks?scopes[tasks:onlyArchived]=true
   body: none
   auth: inherit
 }
 
 params:query {
+  "scopes[tasks:onlyArchived]": true
   ~includes[]: Owner
   ~includes[]: Project
   ~scopes[byProject]: 4
