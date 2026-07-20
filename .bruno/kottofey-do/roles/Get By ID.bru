@@ -1,0 +1,20 @@
+meta {
+  name: Get By ID
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{BASE_URL}}/roles/4
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~includes[]: Permissions
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -5,18 +5,15 @@ meta {
 }
 
 put {
-  url: {{BASE_URL}}/users/73
+  url: {{BASE_URL}}/roles/4
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "roles": [
-      {
-        "name": "admin"
-      }
-    ]
+    "name": "New Name New Role",
+    "description": "New Role Description"
   }
 }
 
