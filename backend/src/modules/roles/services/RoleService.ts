@@ -5,7 +5,7 @@ import { RoleRepository } from '../repositories/RoleRepository';
 
 import { BaseService } from '@/shared';
 import { jwtUser } from '@/modules/users/schemas/partials';
-import { RoleModel, UserModel } from '@/sequelize/models';
+import { RoleModel } from '@/sequelize/models';
 import {
   roleUpdateSchema,
   roleCreateSchema,

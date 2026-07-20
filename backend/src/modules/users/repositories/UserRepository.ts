@@ -1,10 +1,13 @@
 import { FindOptions, Transaction } from 'sequelize';
+import { z } from 'zod';
 
 import { UserModel } from '@/sequelize/models';
 import { BaseRepository } from '@/shared';
 import { CommonQuery } from '@/fastify/types';
 import { parseScopes } from '@/fastify/helpers';
 import { USER_SCOPE_HANDLERS } from '@/sequelize/models/User';
+import { roleService } from '@/modules/roles';
+import { roleUpdateSchema } from '@/modules/roles/schemas/partials';
 
 export class UserRepository extends BaseRepository<UserModel> {
   constructor() {
@@ -50,11 +53,36 @@ export class UserRepository extends BaseRepository<UserModel> {
     return await this.model.findByPk(id, { paranoid });
   }
 
-  async setRolesToUser(
-    user: UserModel,
-    roles: number[],
-    transaction?: Transaction,
-  ) {
-    await user.$set('roles', roles, { transaction });
+  async setRolesToUser({
+    user,
+    roles,
+    transaction,
+  }: {
+    user: UserModel;
+    roles: z.infer<typeof roleUpdateSchema>[];
+    transaction: Transaction;
+  }) {
+    if (!roles.length) {
+      throw new Error('Роли не указаны');
+    }
+
+    const foundRoles = await Promise.all(
+      roles.map(async role => {
+        if (!role.name) {
+          throw new Error('Название роли не указано');
+        }
+
+        const foundRole = await roleService.findByName(role.name);
+
+        if (!foundRole) {
+          throw new Error(`Роль не существует: "${role.name}"`);
+        }
+
+        return foundRole;
+      }),
+    );
+
+    // Устанавливаем роли пользователю
+    await user.$set('roles', foundRoles, { transaction });
   }
 }

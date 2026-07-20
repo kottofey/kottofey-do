@@ -8,16 +8,14 @@ import dayjs from 'dayjs';
 import { UserRepository } from '../repositories/UserRepository';
 import {
   jwtUser,
-  userBaseSchema,
   userCreateSchema,
   userUpdateSchema,
 } from '../schemas/partials';
 
 import { BaseService } from '@/shared';
-import { RefreshTokenModel, RoleModel, UserModel } from '@/sequelize/models';
+import { RefreshTokenModel, UserModel } from '@/sequelize/models';
 import { CommonQuery } from '@/fastify/types';
 import { sequelize } from '@/sequelize';
-import { userSchema } from '@/modules/users/schemas/userSchema';
 
 export class UserService extends BaseService {
   constructor(private userRepository: UserRepository) {
@@ -54,17 +52,8 @@ export class UserService extends BaseService {
       scopes,
     );
 
-    const users = rows.map(row => {
-      const json: z.infer<typeof userBaseSchema> = row.toJSON();
-      const { roles, ...user } = json;
-      return {
-        ...user,
-        roles: roles.map(r => r.name),
-      };
-    });
-
     return {
-      data: users,
+      data: rows,
       meta: this.paginate(count, limit, page),
     };
   }
@@ -109,28 +98,19 @@ export class UserService extends BaseService {
       { transaction: t },
     );
 
-    if (roles.length > 0) {
-      // TODO Сделать модуль для ролей. А стоит ли?..
-      //  Навреное да, чтобы добавлять-удалять роли при необходимости.
-      //  Также сделать модуль для пермишенов. Подумать как это лучше реализовать.
-      //  Может быть лучше просто сервисы.
-
-      const foundRoles = await RoleModel.findAll({ where: { name: roles } });
-
-      if (!foundRoles.length) {
-        await t.rollback();
-        throw Error(`Одной из ролей не существует: [${roles.join(', ')}]`);
-      }
-
-      const roleIds = foundRoles.map(role => role.id);
-
-      await this.userRepository.setRolesToUser(user, roleIds, t);
+    if (roles.length) {
+      await this.userRepository.setRolesToUser({
+        user,
+        roles,
+        transaction: t,
+      });
     }
 
     // обновляем инстанс нового юзера чтобы сработал дефолтный скоуп, убирающий пароль
-    await user.reload({ transaction: t });
 
     await t.commit();
+
+    await user.reload();
 
     return user;
   }
@@ -144,8 +124,6 @@ export class UserService extends BaseService {
     data: Partial<Attributes<UserModel>>;
     currentUser: z.infer<typeof jwtUser>;
   }): Promise<UserModel | null> {
-    const user = await this.getById({ id, currentUser });
-
     if (
       !this.isAllowed({
         currentUserId: currentUser.id,
@@ -156,17 +134,34 @@ export class UserService extends BaseService {
       return null;
     }
 
-    const { password, ...restUser } = data as z.infer<typeof userUpdateSchema>;
+    const user = await this.getById({ id, currentUser });
 
-    const hashedPassword = password && (await bcrypt.hash(password, 10));
+    if (user) {
+      const t = await sequelize.transaction();
 
-    await this.userRepository.update(id, {
-      ...restUser,
-      password_hash: hashedPassword,
-    });
-    // await user?.update({ ...restUser, password_hash: hashedPassword });
+      const { password, roles, ...restUser } = data as z.infer<
+        typeof userUpdateSchema
+      >;
 
-    await user?.reload();
+      const hashedPassword = password && (await bcrypt.hash(password, 10));
+
+      await this.userRepository.update(id, {
+        ...restUser,
+        password_hash: hashedPassword,
+      });
+
+      if (roles?.length) {
+        await this.userRepository.setRolesToUser({
+          user,
+          roles,
+          transaction: t,
+        });
+      }
+
+      await t.commit();
+      await user.reload();
+    }
+
     return user;
   }
 
