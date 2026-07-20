@@ -1,4 +1,4 @@
-import Fastify from 'fastify';
+import Fastify, { FastifyRequest, LogController } from 'fastify';
 import qs from 'qs';
 import {
   serializerCompiler,
@@ -31,7 +31,9 @@ export const fastify = Fastify({
     querystringParser: str =>
       qs.parse(str, { throwOnLimitExceeded: true, comma: true }),
   },
-  disableRequestLogging: true,
+  logController: new LogController({
+    disableRequestLogging: true,
+  }),
 });
 
 // -----------------------------------------------------------------------------
