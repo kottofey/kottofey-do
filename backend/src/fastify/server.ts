@@ -1,4 +1,4 @@
-import Fastify, { FastifyRequest, LogController } from 'fastify';
+import Fastify, { LogController } from 'fastify';
 import qs from 'qs';
 import {
   serializerCompiler,
