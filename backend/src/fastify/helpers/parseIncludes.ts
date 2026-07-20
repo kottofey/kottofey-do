@@ -15,7 +15,7 @@ export const INCLUDES_MAP = {
   Project: { model: ProjectModel, as: 'project' },
   Tasks: { model: TaskModel, as: 'tasks' },
   Users: { model: UserModel },
-  Roles: { model: RoleModel },
+  Roles: { model: RoleModel, as: 'roles' },
   Members: { model: UserModel, as: 'members' },
   Owner: { model: UserModel, as: 'owner' },
   UserDetails: { model: UserModel, as: 'user_details' },
