@@ -21,6 +21,7 @@
     "rootDir": ".",
     "outDir": "./dist",
     "strictPropertyInitialization": false,
+    "types": ["node", "fastify"],
     "paths": {
       "@/helpers": ["./src/helpers"],
       "@/fastify/*": ["./src/fastify/*"],
@@ -36,5 +37,5 @@
       "@/modules/*": ["./src/modules/*"]
     }
   },
-  "include": ["src/**/*", "eslint.config.ts"]
+  "include": ["src/**/*", "src/types/*", "eslint.config.ts"]
 }

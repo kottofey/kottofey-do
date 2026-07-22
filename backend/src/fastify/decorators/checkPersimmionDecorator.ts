@@ -15,7 +15,7 @@ export async function checkPersimmionDecorator(
 
   await request.jwtVerify({ ignoreExpiration: true });
 
-  const userRoles = request.user.roles;
+  const userRoles = request.user.roles.map(role => role.name);
 
   if (userRoles.length > 0) {
     const rolesWithPermissions = await RoleModel.findAll({

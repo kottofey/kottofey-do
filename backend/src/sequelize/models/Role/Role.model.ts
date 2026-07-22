@@ -26,7 +26,7 @@ export class RoleModel extends Model {
   declare name: string;
 
   @Column({ type: DataTypes.STRING })
-  declare description?: string;
+  declare description: string;
 
   @Column({
     type: DataTypes.DATE,

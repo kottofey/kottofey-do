@@ -8,7 +8,7 @@ import { fastify } from '@/fastify';
 interface JwtPayload {
   id: number;
   email: string;
-  roles: string[];
+  roles: { name: string; description: string }[];
 }
 
 const COOKIE_OPTIONS = {
@@ -60,7 +60,10 @@ export async function authenticateDecorator(
     const payload: JwtPayload = {
       id: user.id,
       email: user.email,
-      roles: user.roles.map(r => r.name),
+      roles: user.roles.map(r => ({
+        name: r.name,
+        description: r.description,
+      })),
     };
 
     const [accessToken, refreshToken] = await Promise.all([

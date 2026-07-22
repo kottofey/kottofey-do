@@ -5,12 +5,11 @@
   "author": "kottofey",
   "type": "module",
   "scripts": {
-    "BACKEND:dev": "nodemon --watch ./src --ignore ./node_modules --exec tsx --env-file=.env src/fastify/server.ts",
-    "BACKEND:dev2": "tsx watch --env-file=.env src/fastify/server.ts",
+    "BACKEND:dev": "tsx watch --env-file=.env src/fastify/server.ts",
     "BACKEND:prod": "node --env-file=.env dist/server.js",
-    "build": "tsup && tsc-alias",
-    "BACKEND:check-types": "tsc -b --noEmit",
-    "lint:backend": "prettier --log-level silent --write src/ && eslint --config eslint.config.ts --ext .ts,.js --fix ./src"
+    "B:build": "tsup && tsc-alias",
+    "B:check-types": "tsc -b --noEmit",
+    "B:lint": "prettier --log-level silent --write src/ && eslint --config eslint.config.ts --ext .ts,.js --fix ./src"
   },
   "license": "ISC",
   "dependencies": {

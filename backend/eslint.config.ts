@@ -3,6 +3,9 @@ import tseslint from 'typescript-eslint';
 import globals from 'globals';
 import importPlugin from 'eslint-plugin-import';
 import { defineConfig } from 'eslint/config';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export default defineConfig(
   {
@@ -13,6 +16,7 @@ export default defineConfig(
       '_lint-backups/**',
       'src/sequelize/migrations',
       'src/sequelize/seeders',
+      '**/*.d.ts',
     ],
   },
   eslint.configs.recommended,
@@ -50,12 +54,15 @@ export default defineConfig(
 
     rules: {
       'import/order': [2, { 'newlines-between': 'always' }],
-      'import/newline-after-import': [2, { count: 1, exactCount: true, considerComments: true }],
+      'import/newline-after-import': [
+        2,
+        { count: 1, exactCount: true, considerComments: true },
+      ],
       // indent: ['error', 2, { SwitchCase: 1 }],
       quotes: ['error', 'single'],
       'no-sync': 'warn',
       'no-alert': 'error',
-      // 'no-console': 'error',
+      'no-console': process.env.MODE === 'development' ? 'off' : 'error',
     },
   },
 );

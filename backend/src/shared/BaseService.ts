@@ -1,3 +1,7 @@
+import { z } from 'zod';
+
+import { roleSchema } from '@/modules/users/schemas/partials/userBaseSchema.js';
+
 export abstract class BaseService {
   protected paginate(count: number, limit: number, page: number) {
     return {
@@ -8,9 +12,9 @@ export abstract class BaseService {
     };
   }
 
-  isAdmin(roles: string[]) {
+  isAdmin(roles: z.infer<typeof roleSchema>[]) {
     // TODO внедрить константу для названий ролей, чтобы не хардкодить
-    return roles.some(r => r === 'admin');
+    return roles.some(r => r.name === 'admin');
   }
 
   /**
@@ -26,7 +30,7 @@ export abstract class BaseService {
   }: {
     recordOwnerId: number;
     currentUserId: number;
-    currentUserRoles: string[];
+    currentUserRoles: z.infer<typeof roleSchema>[];
   }) {
     return this.isAdmin(currentUserRoles) || recordOwnerId === currentUserId;
   }

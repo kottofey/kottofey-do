@@ -1,6 +1,3 @@
-/* eslint-disable */
-import { UserRoles } from './types';
-
 declare module 'fastify' {
   interface FastifyContextConfig {
     requiredPermissions?: string[];
@@ -36,7 +33,9 @@ declare module '@fastify/jwt' {
     user: {
       id: number;
       email: string;
-      roles: string[];
+      roles: { name: string; description: string }[];
     };
   }
 }
+
+export {};

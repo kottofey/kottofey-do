@@ -201,9 +201,10 @@ export class UserService extends BaseService {
     request: FastifyRequest;
     reply: FastifyReply;
   }): Promise<z.infer<typeof jwtUser> | null> {
-    const { email = '', password = '' } = request.body as FastifyRequest<{
-      Body: { email?: string; password?: string };
-    }>;
+    const { email = '', password = '' } = request.body as {
+      email?: string;
+      password?: string;
+    };
 
     const validatedUser = await this.validateUser(email, password);
 
@@ -214,7 +215,7 @@ export class UserService extends BaseService {
     const payload = {
       id: validatedUser.id,
       email: validatedUser.email,
-      roles: validatedUser.roles.map(r => r.name),
+      roles: validatedUser.roles,
     };
 
     const { accessToken, refreshToken } = await this.generateTokens({
@@ -318,7 +319,7 @@ export class UserService extends BaseService {
       return {
         id,
         email,
-        roles: roles.map(r => r.name),
+        roles,
       };
     }
     return null;
