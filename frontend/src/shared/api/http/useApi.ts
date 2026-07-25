@@ -64,7 +64,7 @@ export default async function useApi<T>({
   if (json.message) {
     notification.info({
       content: json.message,
-      duration: 1500,
+      duration: 4000,
       closable: true,
     });
   }

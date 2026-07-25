@@ -7,6 +7,7 @@ import {
   EyeIcon as ViewerIcon,
   PersonIcon as UserIcon,
   ShieldIcon as AdminIcon,
+  InfinitiIcon,
 } from '@/shared/ui/icons';
 import { useAuthStore } from '@/shared/stores';
 
@@ -23,13 +24,6 @@ const { user } = useAuthStore();
 
 <template>
   <header class="page-wrapper">
-    <!--    <div-->
-    <!--      v-if="user"-->
-    <!--      class="header-buttons"-->
-    <!--      :style="{-->
-    <!--        '&#45;&#45;buttons-shadow-color': settings.theme === 'light' ? '#000' : '#fff',-->
-    <!--      }"-->
-    <!--    >-->
     <div
       v-if="user"
       class="header-buttons"
@@ -37,13 +31,14 @@ const { user } = useAuthStore();
       <div class="box">
         <NAvatar
           v-for="role in user.roles"
-          :key="role"
+          :key="role.name"
           round
           class="avatar"
         >
-          <NIcon v-if="role === 'admin'"><AdminIcon /></NIcon>
-          <NIcon v-if="role === 'user'"><UserIcon /></NIcon>
-          <NIcon v-if="role === 'guest'"> <ViewerIcon /></NIcon>
+          <NIcon v-if="role.name === 'admin'"><AdminIcon /></NIcon>
+          <NIcon v-else-if="role.name === 'user'"><UserIcon /></NIcon>
+          <NIcon v-else-if="role.name === 'guest'"><ViewerIcon /></NIcon>
+          <NIcon v-else><InfinitiIcon /></NIcon>
         </NAvatar>
       </div>
       <p class="box">{{ user.email }}</p>

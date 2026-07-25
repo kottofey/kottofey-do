@@ -4,7 +4,7 @@ import {
   useQueryClient,
   QueryClient,
 } from '@tanstack/vue-query';
-import { computed, type MaybeRefOrGetter, toValue } from 'vue';
+import { computed, type MaybeRefOrGetter, toRef, toValue } from 'vue';
 
 import {
   getAllUsers,
@@ -16,6 +16,7 @@ import {
   type IUser,
   type IUserScopes,
   type IUserIncludes,
+  getAllUserRoles,
 } from './user-api';
 import { userKeys } from './user-keys';
 
@@ -181,5 +182,17 @@ export const useRestoreUserMutation = () => {
         duration: 5000,
       });
     },
+  });
+};
+
+export const useUserRolesQuery = ({
+  isEnabled,
+}: {
+  isEnabled?: MaybeRefOrGetter<boolean>;
+}) => {
+  return useQuery({
+    queryFn: () => getAllUserRoles(),
+    queryKey: ['roles'],
+    enabled: computed(() => toValue(isEnabled)),
   });
 };

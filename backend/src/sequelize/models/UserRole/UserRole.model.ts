@@ -10,7 +10,12 @@ import { DataTypes } from 'sequelize';
 
 import { UserModel, RoleModel } from '@/sequelize/models';
 
-@Table({ tableName: 'UserRoles', timestamps: true, underscored: true })
+@Table({
+  tableName: 'UserRoles',
+  timestamps: true,
+  underscored: true,
+  paranoid: false,
+})
 export class UserRoleModel extends Model {
   @AutoIncrement
   @PrimaryKey

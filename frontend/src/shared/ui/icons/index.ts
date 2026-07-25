@@ -13,3 +13,4 @@ export { default as ArchiveIcon } from './ArchiveIcon.vue';
 export { default as UnarchiveIcon } from './UnarchiveIcon.vue';
 export { default as TrashIcon } from './TrashIcon.vue';
 export { default as RestoreIcon } from './RestoreIcon.vue';
+export { default as EditIcon } from './EditIcon.vue';

@@ -1,84 +1,98 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { NCheckbox, NInput } from 'naive-ui';
+import { NCheckbox, NDataTable } from 'naive-ui';
 
+import { createColumns } from '../config';
+
+import EditUserModal from './EditUserModal.vue';
+
+import { AddButton, TheLayout } from '@/shared/ui';
 import {
-  type ITaskScopes,
-  useCreateTaskMutation,
-  useTasksQuery,
-} from '@/entities/task';
-import { TheLayout } from '@/shared/ui';
-import { TaskCard } from '@/widgets/task';
+  type IUser,
+  type IUserScopes,
+  useCreateUserMutation,
+  useEditUserMutation,
+  useUsersQuery,
+} from '@/entities/user';
 
 // -----------------------------------------------------------------------------
 // State
 // -----------------------------------------------------------------------------
 
-const onlyArchived = ref(false);
-const onlyDeleted = ref(false);
-const newTask = ref('');
+const deletedOnly = ref(false);
+const isModalVisible = ref(false);
+const userToEdit = ref<Partial<IUser> | undefined>(undefined);
 
 // -----------------------------------------------------------------------------
 // Computed
 // -----------------------------------------------------------------------------
 
-const taskScopes = computed<ITaskScopes>(() => ({
-  'tasks:onlyArchived': onlyArchived.value,
-  'tasks:onlyDeleted': onlyDeleted.value,
-  'tasks:noArchived': !onlyArchived.value && !onlyDeleted.value,
+const userScopes = computed<IUserScopes>(() => ({
+  'users:deletedOnly': deletedOnly.value,
 }));
 
 // -----------------------------------------------------------------------------
 // Setup
 // -----------------------------------------------------------------------------
 
-const { data: tasks } = useTasksQuery({
-  scopes: taskScopes,
-  includes: ['Owner', 'Project'],
+const { data: users } = useUsersQuery({
+  scopes: userScopes,
+  includes: [],
 });
 
-const { mutate: createTask } = useCreateTaskMutation();
+const { mutate: editUser } = useEditUserMutation();
+const { mutate: createUser } = useCreateUserMutation();
 
-const onCreateTask = () => {
-  createTask({ task: { title: newTask.value } });
-  newTask.value = '';
+// -----------------------------------------------------------------------------
+// Actions
+// -----------------------------------------------------------------------------
+
+const onUserRestore = (id: number) => {
+  console.log('restore', id);
+};
+
+const onOpenModal = (user: Partial<IUser> | undefined) => {
+  userToEdit.value = user ? user : undefined;
+  isModalVisible.value = true;
+};
+
+const onSaveUser = (user: Partial<IUser>) => {
+  if (user.id) {
+    console.log('edit!', user.id, JSON.stringify(user, null, 2));
+    editUser({ id: user.id, updatedUser: user });
+  } else {
+    console.log('new!', JSON.stringify(user, null, 2));
+    createUser({ user });
+  }
+
+  userToEdit.value = undefined;
+  isModalVisible.value = true;
 };
 </script>
 
 <template>
   <TheLayout>
     <template #buttons-extra>
+      <AddButton @click="onOpenModal">Новый юзер</AddButton>
       <NCheckbox
-        :disabled="onlyDeleted"
-        v-model:checked="onlyArchived"
-        label="Архив"
-      />
-      <NCheckbox
-        v-model:checked="onlyDeleted"
+        v-model:checked="deletedOnly"
         label="Удаленные"
-        @change="
-          () => {
-            if (onlyArchived) onlyArchived = false;
-          }
-        "
-      />
-
-      <NInput
-        v-model:value="newTask"
-        @keydown.enter="onCreateTask"
-        placeholder="Новая задача..."
       />
     </template>
-    <div
-      class="wrapper"
-      v-if="tasks"
-    >
-      <TaskCard
-        v-for="task of tasks?.data"
-        :key="task.id"
-        :task="task"
-      />
-    </div>
+
+    <NDataTable
+      :data="users?.data"
+      :columns="
+        createColumns({ onRowRestore: onUserRestore, onRowEdit: onOpenModal })
+      "
+      :single-line="false"
+    />
+
+    <EditUserModal
+      v-model:is-visible="isModalVisible"
+      :user="userToEdit"
+      @save="(user) => onSaveUser(user)"
+    />
   </TheLayout>
 </template>
 

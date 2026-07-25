@@ -8,7 +8,7 @@ const useAuthStore = defineStore('auth', () => {
   // -----------------------------------------------------------------------------
 
   const userData = ref<Partial<IUser> | null>(null);
-  // const isAuthInitialized = ref(false);
+
   // -----------------------------------------------------------------------------
   // Getters
   // -----------------------------------------------------------------------------
@@ -21,22 +21,9 @@ const useAuthStore = defineStore('auth', () => {
     return null;
   });
 
-  // const full_name = computed(
-  //   () =>
-  //     user.value &&
-  //     `${userData.value?.surname} ${userData.value?.firstname} ${userData.value?.patronymic}`,
-  // );
-
-  // const isAuthorized = computed(() => {
-  //   if (user.value) {
-  //     return true;
-  //   }
-  //
-  //   deleteUser();
-  //   return false;
-  // });
-
-  const isAdmin = computed(() => user.value?.roles?.includes('admin') ?? false);
+  const isAdmin = computed(() =>
+    user.value?.roles?.some((role) => role.name === 'admin'),
+  );
 
   // -----------------------------------------------------------------------------
   // Actions

@@ -1,4 +1,5 @@
 import { useApi, httpMethod, serializeQuery } from '@/shared/api';
+import type { IMeta } from '@/shared/types';
 
 // TODO дописать скоупы если будут
 // TODO написать алгоритм сериализации с проверкой через zod
@@ -10,14 +11,19 @@ export interface IUser {
   // patronymic: string;
 
   email: string;
+  password: string;
 
-  roles: string[];
+  roles: {
+    id?: number;
+    name: string;
+    description?: string;
+  }[];
 
   deleted_at: number;
 }
 
 export type IUserScopes = {
-  'users:activeOnly'?: boolean; // TODO доделать
+  'users:deletedOnly'?: boolean;
 };
 export type IUserIncludes = Array<''>;
 
@@ -27,8 +33,8 @@ export async function getAllUsers({
 }: {
   scopes?: IUserScopes;
   includes?: IUserIncludes;
-}): Promise<IUser[] | undefined> {
-  return await useApi<IUser[]>({
+}): Promise<{ meta: IMeta; data: IUser[] } | undefined> {
+  return await useApi<{ meta: IMeta; data: IUser[] }>({
     route: 'users',
     method: httpMethod.GET,
     query: serializeQuery({ scopes, includes }),
@@ -84,4 +90,13 @@ export async function editUser({
     method: httpMethod.PUT,
     body: JSON.stringify(updatedUser),
   });
+}
+
+export async function getAllUserRoles(): Promise<IUser['roles']> {
+  const rolesData = await useApi<{ data: IUser['roles'] }>({
+    route: 'roles',
+    method: httpMethod.GET,
+  });
+
+  return rolesData?.data ?? [];
 }
