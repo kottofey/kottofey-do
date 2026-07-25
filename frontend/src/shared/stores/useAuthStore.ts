@@ -8,6 +8,7 @@ const useAuthStore = defineStore('auth', () => {
   // -----------------------------------------------------------------------------
 
   const userData = ref<Partial<IUser> | null>(null);
+  const isLoggingIn = ref<boolean>(false);
 
   // -----------------------------------------------------------------------------
   // Getters
@@ -37,6 +38,10 @@ const useAuthStore = defineStore('auth', () => {
     userData.value = null;
   }
 
+  function setLoggingIn(value: boolean) {
+    isLoggingIn.value = value;
+  }
+
   return {
     //State
     // isAuthInitialized,
@@ -50,6 +55,8 @@ const useAuthStore = defineStore('auth', () => {
     // Actions
     setUser,
     deleteUser,
+    setLoggingIn,
+    isLoggingIn,
   };
 });
 

@@ -20,6 +20,7 @@ export default function useAuth() {
     password: string;
   }) => {
     try {
+      authStore.setLoggingIn(true);
       const result = await useApi<IAuthResponse>({
         route: 'users/login',
         method: httpMethod.POST,
@@ -45,6 +46,8 @@ export default function useAuth() {
         });
         console.error(e);
       }
+    } finally {
+      authStore.setLoggingIn(false);
     }
   };
 

@@ -12,12 +12,13 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  if (to.name === 'login.show' && useAuthStore().user) {
+  const authStore = useAuthStore();
+
+  if (to.name === 'login.show' && (authStore.user || authStore.isLoggingIn)) {
     return { name: 'home.show' };
   }
 
-  if (to.name !== 'login.show' && !useAuthStore().user) {
-    // console.error('Route guard: user is not authorized');
+  if (to.name !== 'login.show' && !authStore.user && !authStore.isLoggingIn) {
     return { name: 'login.show' };
   }
 });
