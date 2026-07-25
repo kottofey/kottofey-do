@@ -58,10 +58,8 @@ const onOpenModal = (user: Partial<IUser> | undefined) => {
 
 const onSaveUser = (user: Partial<IUser>) => {
   if (user.id) {
-    console.log('edit!', user.id, JSON.stringify(user, null, 2));
     editUser({ id: user.id, updatedUser: user });
   } else {
-    console.log('new!', JSON.stringify(user, null, 2));
     createUser({ user });
   }
 

@@ -15,6 +15,7 @@ import { computed, ref, toRef, watch } from 'vue';
 import { initFormData, createFormRules } from '../config';
 
 import { type IUser, useUserRolesQuery } from '@/entities/user';
+import { useAuthStore } from '@/shared/stores';
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -41,7 +42,7 @@ const formData = ref<
 // Computed
 // -----------------------------------------------------------------------------
 
-const isEnabled = computed(() => !!isVisible.value);
+const isEnabled = computed(() => !!isVisible.value && isAdmin);
 
 const rolesOptions = computed(
   () =>
@@ -63,6 +64,7 @@ const selectedRoles = computed({
 // -----------------------------------------------------------------------------
 
 const { data: allRoles } = useUserRolesQuery({ isEnabled });
+const { isAdmin } = useAuthStore();
 
 // -----------------------------------------------------------------------------
 // Methods
@@ -152,6 +154,7 @@ watch([isVisible, () => user], ([currentIsVisible]) => {
         <NFormItem
           label="Roles"
           path="roles"
+          v-if="isAdmin"
         >
           <NSelect
             v-model:value="selectedRoles"
