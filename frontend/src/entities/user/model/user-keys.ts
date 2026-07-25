@@ -1,8 +1,5 @@
 const USER_QUERY_KEY = 'user' as const;
-import type {
-  IUserScopes,
-  IUserIncludes,
-} from 'src/entities/user/model/user-api';
+import type { IUserScopes, IUserIncludes } from './user-api';
 
 export const userKeys = {
   all: [USER_QUERY_KEY] as const,

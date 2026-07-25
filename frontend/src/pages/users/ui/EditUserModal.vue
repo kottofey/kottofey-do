@@ -173,6 +173,7 @@ watch([isVisible, () => user], ([currentIsVisible]) => {
           <NButton
             @click="isVisible = false"
             color="black"
+            textColor="white"
           >
             Отменить
           </NButton>

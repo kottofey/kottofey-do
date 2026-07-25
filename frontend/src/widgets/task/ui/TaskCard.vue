@@ -17,7 +17,7 @@ import {
 } from '@/entities/task';
 
 const { task } = defineProps<{
-  task?: ITask;
+  task: ITask;
 }>();
 
 const { mutate: updateTask } = useEditTaskMutation();
@@ -27,7 +27,6 @@ const { mutate: restoreTask } = useRestoreTaskMutation();
 
 <template>
   <div
-    v-if="task"
     class="task-card"
     @click="
       updateTask({

@@ -1,15 +1,42 @@
 import { type MaybeRefOrGetter, toValue } from 'vue';
 
+import type { IMeta } from '@/shared/types';
+
 export default function serializeQuery({
   includes,
   scopes,
+  meta,
 }: {
   includes?: string[];
   scopes?: MaybeRefOrGetter<unknown>;
+  meta?: MaybeRefOrGetter<Partial<IMeta>>;
 }): string {
   const q = new URLSearchParams();
 
+  // -----------------------------------------------------------------------------
+  // Meta
+  // -----------------------------------------------------------------------------
+
+  const pageValue = toValue(meta)?.page;
+  const limitValue = toValue(meta)?.limit;
+
+  if (pageValue) {
+    q.append('page', pageValue.toString());
+  }
+
+  if (limitValue) {
+    q.append('limit', limitValue.toString());
+  }
+
+  // -----------------------------------------------------------------------------
+  // Includes
+  // -----------------------------------------------------------------------------
+
   includes?.forEach((include) => q.append('includes[]', include));
+
+  // -----------------------------------------------------------------------------
+  // Scopes
+  // -----------------------------------------------------------------------------
 
   if (Array.isArray(scopes)) {
     // -----------------------------------------------------------------------------

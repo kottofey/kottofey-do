@@ -4,7 +4,7 @@ import {
   useQueryClient,
   QueryClient,
 } from '@tanstack/vue-query';
-import { computed, type MaybeRefOrGetter, toRef, toValue } from 'vue';
+import { computed, type MaybeRefOrGetter, toValue } from 'vue';
 
 import {
   getAllUsers,

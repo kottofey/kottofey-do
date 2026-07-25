@@ -29,9 +29,10 @@ export class ProjectService extends BaseService {
   }) {
     const offset = (page - 1) * limit;
 
-    const projectIds = await this.getOwnAndMembersProjectIds(currentUser.id);
+    const projectIds =
+      (await this.getOwnAndMembersProjectIds(currentUser.id)) ?? [];
 
-    if (projectIds?.length === 0) {
+    if (projectIds.length === 0) {
       return {
         data: [],
         meta: this.paginate(0, limit, page),
