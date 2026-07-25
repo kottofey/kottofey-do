@@ -1,6 +1,7 @@
 import { useApi, httpMethod, serializeQuery } from '@/shared/api';
 import type { IUser } from '@/entities/user';
 import type { IMeta } from '@/shared/types';
+import type { IProject } from '@/entities/project';
 
 // TODO дописать скоупы если будут
 // TODO написать алгоритм сериализации с проверкой через zod
@@ -14,7 +15,7 @@ export interface ITask {
   is_done: boolean;
   is_archived: boolean;
 
-  project: object;
+  project: IProject;
   owner?: Partial<IUser>;
 
   created_at: number;

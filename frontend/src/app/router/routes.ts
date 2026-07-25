@@ -13,6 +13,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/tasks'),
     meta: {},
   },
+  {
+    path: '/projects',
+    name: 'projects.show',
+    component: () => import('@/pages/projects'),
+    meta: {},
+  },
 
   {
     path: '/login',

@@ -18,6 +18,7 @@ import {
   type ITaskIncludes,
 } from './task-api';
 import { taskKeys } from './task-keys.ts';
+import { projectKeys } from '@/entities/project/model/project-keys';
 
 import { notification } from '@/shared/lib';
 import { getErrorMessage } from '@/shared/lib/tanstack';
@@ -111,11 +112,7 @@ export const useEditTaskMutation = () => {
       await queryClient.invalidateQueries({
         queryKey: taskKeys.detail(variables.id),
       });
-      // notification.success({
-      //   content: 'Отредактировано',
-      //   closable: true,
-      //   duration: 5000,
-      // });
+      await queryClient.invalidateQueries({ queryKey: projectKeys.all });
     },
     onError: (error: Error) => {
       notification.error({

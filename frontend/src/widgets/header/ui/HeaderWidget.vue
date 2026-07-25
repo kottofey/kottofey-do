@@ -60,6 +60,13 @@ const { user } = useAuthStore();
       </RouterLink>
 
       <RouterLink
+        :to="{ name: 'projects.show' }"
+        class="link"
+      >
+        Проекты
+      </RouterLink>
+
+      <RouterLink
         :to="{ name: 'users.show' }"
         class="link"
       >
