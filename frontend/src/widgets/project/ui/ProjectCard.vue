@@ -46,7 +46,10 @@ defineProps<{ project: IProject }>();
     <NDivider />
 
     <NFlex justify="space-between">
-      <ProjectTasksPartial :tasks="project.tasks" />
+      <ProjectTasksPartial
+        :tasks="project.tasks"
+        :project_id="project.id"
+      />
 
       <VDivider />
 

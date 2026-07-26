@@ -5,6 +5,9 @@ export {
   useEditProjectMutation,
   useDeleteProjectMutation,
   useRestoreProjectMutation,
+
+  // Для разовых запросов
+  useProjectsQueryClient,
 } from './model/project-queries';
 
 export type {

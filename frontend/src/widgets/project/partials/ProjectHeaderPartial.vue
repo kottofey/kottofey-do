@@ -11,8 +11,9 @@ const percentageDone = computed(() => getPercentageDone(project));
 const done = computed(() => getDoneAndTotalTasks(project)[0]);
 const total = computed(() => getDoneAndTotalTasks(project)[1]);
 const progressBarColor = computed(() => {
-  if (percentageDone.value >= 30 && percentageDone.value < 70) return 'warning';
-  if (percentageDone.value >= 70) return 'success';
+  if (percentageDone.value >= 50 && percentageDone.value < 100)
+    return 'warning';
+  if (percentageDone.value === 100) return 'success';
   return 'error';
 });
 </script>

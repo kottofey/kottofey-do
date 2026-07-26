@@ -2,10 +2,10 @@ import type { IProjectScopes, IProjectIncludes } from './project-api';
 
 import type { IMeta } from '@/shared/types';
 
-const TASK_QUERY_KEY = 'project' as const;
+const PROJECT_QUERY_KEY = 'project' as const;
 
 export const projectKeys = {
-  all: [TASK_QUERY_KEY] as const,
+  all: [PROJECT_QUERY_KEY] as const,
 
   lists: () => [...projectKeys.all, 'list'] as const,
 
@@ -14,7 +14,7 @@ export const projectKeys = {
     includes?: IProjectIncludes,
     meta?: Partial<IMeta>,
   ): [
-    typeof TASK_QUERY_KEY,
+    typeof PROJECT_QUERY_KEY,
     'list',
     { scopes: typeof scopes; includes: typeof includes; meta: typeof meta },
   ] => [...projectKeys.lists(), { scopes, includes, meta }] as const,

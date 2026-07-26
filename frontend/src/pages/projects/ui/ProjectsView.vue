@@ -61,6 +61,7 @@ const onPageSizeUpdate = (pgSize: number) => {
         v-model:page-size="limit"
         :page-sizes="[5, 10, 20, 30, 40]"
         show-size-picker
+        :page-slot="5"
         @update:page-size="onPageSizeUpdate"
       />
     </template>

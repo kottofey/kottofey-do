@@ -1,4 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  type QueryClient,
+} from '@tanstack/vue-query';
 import { computed, type MaybeRefOrGetter, toValue } from 'vue';
 
 import {
@@ -17,6 +22,24 @@ import { projectKeys } from './project-keys.ts';
 import { notification } from '@/shared/lib';
 import { getErrorMessage } from '@/shared/lib/tanstack';
 import type { IMeta } from '@/shared/types';
+
+export const useProjectsQueryClient = async ({
+  scopes,
+  includes,
+  meta,
+  client,
+}: {
+  client: QueryClient;
+  scopes?: IProjectScopes;
+  meta?: Partial<IMeta>;
+  includes?: IProjectIncludes;
+}) => {
+  // Для разовых запросов
+  return await client.fetchQuery({
+    queryKey: projectKeys.list(scopes, includes, meta),
+    queryFn: () => getAllProjects({ includes, scopes, meta }),
+  });
+};
 
 export const useProjectsQuery = ({
   scopes,
