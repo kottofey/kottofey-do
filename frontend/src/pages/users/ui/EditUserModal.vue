@@ -63,7 +63,7 @@ const selectedRoles = computed({
 // Setup
 // -----------------------------------------------------------------------------
 
-const { data: allRoles } = useUserRolesQuery({ isEnabled });
+const { data: allRoles } = useUserRolesQuery({ isEnabled: isEnabled.value });
 const { isAdmin } = useAuthStore();
 
 // -----------------------------------------------------------------------------
