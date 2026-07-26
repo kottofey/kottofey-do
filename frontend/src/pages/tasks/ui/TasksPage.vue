@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { NCheckbox, NInput } from 'naive-ui';
+import { NCheckbox, NInput, NPagination } from 'naive-ui';
 
 import {
   type ITaskScopes,
@@ -17,6 +17,9 @@ import { TaskCard } from '@/widgets/task';
 const onlyArchived = ref(false);
 const onlyDeleted = ref(false);
 const newTask = ref('');
+
+const page = ref(1);
+const limit = ref(5);
 
 // -----------------------------------------------------------------------------
 // Computed
@@ -35,6 +38,7 @@ const taskScopes = computed<ITaskScopes>(() => ({
 const { data: tasks } = useTasksQuery({
   scopes: taskScopes,
   includes: ['Owner', 'Project'],
+  meta: computed(() => ({ page: page.value, limit: limit.value })),
 });
 
 const { mutate: createTask } = useCreateTaskMutation();
@@ -42,6 +46,12 @@ const { mutate: createTask } = useCreateTaskMutation();
 const onCreateTask = () => {
   createTask({ task: { title: newTask.value } });
   newTask.value = '';
+};
+
+const onPageSizeUpdate = (pgSize: number) => {
+  if (tasks.value && pgSize > tasks.value.meta.total) {
+    page.value = 1;
+  }
 };
 </script>
 
@@ -79,12 +89,24 @@ const onCreateTask = () => {
         :task="task"
       />
     </div>
+
+    <template #footer>
+      <NPagination
+        :item-count="tasks?.meta.total"
+        v-model:page="page"
+        v-model:page-size="limit"
+        :page-sizes="[5, 10, 20, 30, 40]"
+        show-size-picker
+        :page-slot="5"
+        @update:page-size="onPageSizeUpdate"
+      />
+    </template>
   </TheLayout>
 </template>
 
 <style scoped>
 .wrapper {
-  max-width: 1000px;
+  max-width: 600px;
   width: auto;
   height: auto;
   padding: 10px;

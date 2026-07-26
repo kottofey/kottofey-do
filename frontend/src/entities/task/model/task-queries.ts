@@ -18,10 +18,11 @@ import {
   type ITaskIncludes,
 } from './task-api';
 import { taskKeys } from './task-keys.ts';
-import { projectKeys } from '@/entities/project/model/project-keys';
 
+import { projectKeys } from '@/entities/project/model/project-keys';
 import { notification } from '@/shared/lib';
 import { getErrorMessage } from '@/shared/lib/tanstack';
+import type { IMeta } from '@/shared/types';
 
 export const useTaskQueryClient = async ({
   client,
@@ -42,30 +43,37 @@ export const useTaskQueryClient = async ({
 export const useTasksQueryClient = async ({
   scopes,
   includes,
+  meta,
   client,
 }: {
   scopes?: ITaskScopes;
   includes?: ITaskIncludes;
+  meta?: MaybeRefOrGetter<Partial<IMeta>>;
   client: QueryClient;
 }) => {
   return await client.fetchQuery({
-    queryKey: taskKeys.list(scopes, includes),
-    queryFn: () => getAllTasks({ scopes, includes }),
+    queryKey: taskKeys.list(scopes, includes, toValue(meta)),
+    queryFn: () => getAllTasks({ scopes, includes, meta: toValue(meta) }),
   });
 };
 
 export const useTasksQuery = ({
   scopes,
   includes,
+  meta,
   isEnabled,
 }: {
   scopes?: MaybeRefOrGetter<ITaskScopes>;
   includes?: ITaskIncludes;
+  meta?: MaybeRefOrGetter<Partial<IMeta>>;
   isEnabled?: MaybeRefOrGetter<boolean>;
 }) => {
   return useQuery({
-    queryKey: computed(() => taskKeys.list(toValue(scopes), includes)),
-    queryFn: () => getAllTasks({ scopes: toValue(scopes), includes }),
+    queryKey: computed(() =>
+      taskKeys.list(toValue(scopes), includes, toValue(meta)),
+    ),
+    queryFn: () =>
+      getAllTasks({ scopes: toValue(scopes), includes, meta: toValue(meta) }),
     enabled: computed(() => toValue(isEnabled)),
   });
 };
@@ -85,6 +93,7 @@ export const useCreateTaskMutation = () => {
     mutationFn: ({ task }: { task: Partial<ITask> }) => createTask({ task }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
+      await queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
     },
     onError: (error: Error) => {
       notification.error({
@@ -135,11 +144,6 @@ export const useDeleteTaskMutation = () => {
       await queryClient.invalidateQueries({
         queryKey: taskKeys.detail(variables.id),
       });
-      // notification.success({
-      //   content: 'Удалено',
-      //   closable: true,
-      //   duration: 5000,
-      // });
     },
     onError: (error: Error) => {
       notification.error({
@@ -161,11 +165,6 @@ export const useRestoreTaskMutation = () => {
       await queryClient.invalidateQueries({
         queryKey: taskKeys.detail(variables.id),
       });
-      // notification.success({
-      //   content: 'Восстановлено',
-      //   closable: true,
-      //   duration: 5000,
-      // });
     },
     onError: (error: Error) => {
       notification.error({

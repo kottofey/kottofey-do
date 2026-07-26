@@ -37,14 +37,16 @@ export type ITaskIncludes = Array<'Owner' | 'Project'>;
 export async function getAllTasks({
   scopes,
   includes = [],
+  meta,
 }: {
   scopes?: ITaskScopes;
   includes?: ITaskIncludes;
+  meta?: Partial<IMeta>;
 }): Promise<undefined | { meta: IMeta; data: ITask[] }> {
   return await useApi<{ meta: IMeta; data: ITask[] }>({
     route: 'tasks',
     method: httpMethod.GET,
-    query: serializeQuery({ scopes, includes }),
+    query: serializeQuery({ scopes, includes, meta }),
   });
 }
 
