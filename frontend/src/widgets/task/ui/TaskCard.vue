@@ -1,174 +1,126 @@
 <script setup lang="ts">
-import { NButton, NButtonGroup, NCheckbox, NIcon, NTag } from 'naive-ui';
-import dayjs from 'dayjs';
+import { NCard, NDivider, NFlex, NLayout, NTag, NText } from 'naive-ui';
+import { computed, ref } from 'vue';
 
 import {
-  ArchiveIcon,
-  RestoreIcon,
-  TrashIcon,
-  UnarchiveIcon,
-  ScullCrossBonesIcon,
-} from '@/shared/ui/icons';
-import {
-  type ITask,
-  useDeleteTaskMutation,
-  useEditTaskMutation,
-  useRestoreTaskMutation,
-} from '@/entities/task';
+  SideMenuLayoutSider,
+  TaskCardFooter,
+  TaskCardHeaderMenu,
+  PriorityTag,
+} from '../partials';
+
+import { type ITask, useEditTaskMutation } from '@/entities/task';
 
 const { task } = defineProps<{
   task: ITask;
 }>();
 
+const isMenuOpened = ref(false);
+const isSideMenuOpened = ref(false);
+
 const { mutate: updateTask } = useEditTaskMutation();
-const { mutate: deleteTask } = useDeleteTaskMutation();
-const { mutate: restoreTask } = useRestoreTaskMutation();
+
+const onTaskDone = (taskId: number) => {
+  updateTask({
+    id: taskId,
+    updatedTask: { is_done: !task.is_done },
+  });
+};
+
+// TODO вынести в пинью isMobile и брать это состояние оттуда
+const isMobile = computed(
+  () => 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+);
 </script>
 
 <template>
-  <div
-    class="task-card"
-    @click="
-      updateTask({
-        id: task.id,
-        updatedTask: {
-          is_done: !task.is_done,
-          is_archived: !task.is_done ? true : task.is_archived,
-        },
-      })
+  <NLayout
+    has-sider
+    @mouseenter="
+      () => {
+        if (!isMobile) isSideMenuOpened = true;
+      }
+    "
+    @mouseleave="
+      () => {
+        if (!isMobile) isSideMenuOpened = false;
+      }
     "
   >
-    <div class="task-card__header">
-      <NTag
-        type="primary"
-        round
-        size="tiny"
-        class="task-card__id"
-      >
-        {{ 'Задача #' + task.id }}
-      </NTag>
-
-      <NTag
-        v-if="task.project"
-        type="warning"
-        round
-        size="tiny"
-        class="task-card__id"
-      >
-        {{ task.project.name }}
-      </NTag>
-
-      <NButtonGroup>
-        <NButton
-          v-if="!task.deleted_at"
-          :focusable="false"
-          type="warning"
-          secondary
-          @click.stop="
-            updateTask({
-              id: task.id,
-              updatedTask: { is_archived: !task.is_archived },
-            })
-          "
-        >
-          <template #icon>
-            <NIcon size="28">
-              <ArchiveIcon v-if="!task.is_archived" />
-              <UnarchiveIcon v-else />
-            </NIcon>
-          </template>
-        </NButton>
-
-        <NButton
-          :focusable="false"
-          :type="task.deleted_at ? 'success' : 'error'"
-          secondary
-          @click.stop="
-            () => {
-              if (!task.deleted_at) {
-                deleteTask({ id: task.id });
-              } else {
-                restoreTask({ id: task.id });
-              }
-            }
-          "
-        >
-          <template #icon>
-            <NIcon size="23">
-              <TrashIcon v-if="!task.deleted_at" />
-              <RestoreIcon v-else />
-            </NIcon>
-          </template>
-        </NButton>
-
-        <NButton
-          v-if="task.deleted_at"
-          :focusable="false"
-          type="error"
-          @click.stop="
-            () => {
-              deleteTask({ id: task.id, force: true });
-            }
-          "
-        >
-          <template #icon>
-            <NIcon size="23">
-              <ScullCrossBonesIcon />
-            </NIcon>
-          </template>
-        </NButton>
-      </NButtonGroup>
-    </div>
-
-    <NCheckbox
-      :checked="task.is_done"
-      :label="task.title"
-      size="large"
-      @click.prevent
-      class="task-card--no-pointer"
+    <SideMenuLayoutSider
+      :is-mobile="isMobile"
+      :is-side-menu-opened="isSideMenuOpened"
+      :task="task"
     />
 
-    <div class="task-card__header">
-      <p class="task-card__owner">
-        Владелец: {{ task.owner?.email ?? 'Удалён' }}
-      </p>
-      <p class="task-card__owner">
-        {{ dayjs(task.created_at).format('DD MMM YYYY HH:mm') }}
-      </p>
-    </div>
-  </div>
+    <NCard
+      hoverable
+      @click="
+        () => {
+          onTaskDone(task.id);
+        }
+      "
+    >
+      <template #header>
+        <NFlex>
+          <PriorityTag :task="task" />
+          <NText :class="task.is_done && 'TaskCard--is-done TaskCard--opacity'">
+            {{ task.title }}
+          </NText>
+        </NFlex>
+      </template>
+
+      <template #header-extra>
+        <TaskCardHeaderMenu
+          :is-menu-opened="isMenuOpened"
+          :task="task"
+        />
+      </template>
+
+      <NFlex justify="space-between">
+        <NTag
+          v-if="task.project_id"
+          :type="'warning'"
+          round
+          :bordered="false"
+          size="small"
+        >
+          {{ task.project.name }}
+        </NTag>
+      </NFlex>
+
+      <NDivider />
+
+      <NText :class="task.is_done && 'TaskCard--opacity'">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium
+        deleniti earum impedit incidunt itaque quasi rerum similique sit,
+        suscipit veniam. Architecto assumenda delectus earum, illum magnam
+        possimus unde? Praesentium, rem!)
+      </NText>
+
+      <NDivider />
+
+      <TaskCardFooter :task="task" />
+    </NCard>
+  </NLayout>
 </template>
 
 <style scoped lang="scss">
-.task-card {
-  border: 1px solid #a3a3a3;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  padding: 10px;
-  border-radius: 5px;
-  row-gap: 10px;
+.TaskCard {
+  &__block {
+    width: 100%;
+  }
 
-  width: 500px;
-
-  &__owner {
+  &__footer {
     font-size: 10px;
-    font-style: italic;
   }
 
-  &__id {
-    width: fit-content;
+  &--opacity {
+    opacity: 0.3;
   }
 
-  &__header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  &--no-pointer {
-    cursor: default;
+  &--is-done {
+    text-decoration: line-through;
   }
 }
 </style>
