@@ -14,3 +14,8 @@ export { default as UnarchiveIcon } from './UnarchiveIcon.vue';
 export { default as TrashIcon } from './TrashIcon.vue';
 export { default as RestoreIcon } from './RestoreIcon.vue';
 export { default as EditIcon } from './EditIcon.vue';
+export { default as ExclamationMarkIcon } from './ExclamationMarkIcon.vue';
+export { default as ArrowDownIcon } from './ArrowDownIcon.vue';
+export { default as DotIcon } from './DotIcon.vue';
+export { default as DotsVerticalIcon } from './DotsVerticalIcon.vue';
+export { default as JollyRodgerIcon } from './JollyRodgerIcon.vue';
