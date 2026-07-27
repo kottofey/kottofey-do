@@ -55,6 +55,9 @@ export class TaskModel extends Model {
   @Column({ type: DataTypes.STRING, allowNull: false })
   declare title: string;
 
+  @Column({ type: DataTypes.STRING })
+  declare body: string;
+
   @NotNull
   @Default('normal')
   @Column({

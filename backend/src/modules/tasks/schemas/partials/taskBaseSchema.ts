@@ -8,6 +8,7 @@ export const taskBaseSchema = z.object({
   owner_id: z.number(),
   project_id: z.number().nullish(),
   title: z.string(),
+  body: z.string().nullish(),
   priority: z.enum(['high', 'normal', 'low']),
   sort_order: z.number().nullish(),
   is_done: z.boolean(),
