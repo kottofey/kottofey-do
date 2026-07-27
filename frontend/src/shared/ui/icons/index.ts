@@ -19,3 +19,5 @@ export { default as ArrowDownIcon } from './ArrowDownIcon.vue';
 export { default as DotIcon } from './DotIcon.vue';
 export { default as DotsVerticalIcon } from './DotsVerticalIcon.vue';
 export { default as JollyRodgerIcon } from './JollyRodgerIcon.vue';
+export { default as SaveIcon } from './SaveIcon.vue';
+export { default as CancelIcon } from './CancelIcon.vue';
