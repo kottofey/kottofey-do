@@ -7,9 +7,10 @@ import type { IProject } from '@/entities/project';
 // TODO написать алгоритм сериализации с проверкой через zod
 export interface ITask {
   id: number;
-  project_id: number;
+  project_id: number | null;
   owner_id: number;
   title: string;
+  body: string;
   priority: 'high' | 'normal' | 'low';
   sort_order: number;
   is_done: boolean;
