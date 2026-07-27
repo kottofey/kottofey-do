@@ -1,24 +1,62 @@
 <script setup lang="ts">
-import { NCard, NDivider, NFlex, NLayout, NTag, NText } from 'naive-ui';
-import { computed, ref } from 'vue';
+import { NCard, NDivider, NFlex, NInput, NLayout, NTag, NText } from 'naive-ui';
+import { computed, reactive, ref, watch } from 'vue';
 
 import {
   SideMenuLayoutSider,
   TaskCardFooter,
-  TaskCardHeaderMenu,
+  TaskCardExtraMenu,
   PriorityTag,
 } from '../partials';
 
 import { type ITask, useEditTaskMutation } from '@/entities/task';
 
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
+
 const { task } = defineProps<{
   task: ITask;
 }>();
 
-const isMenuOpened = ref(false);
-const isSideMenuOpened = ref(false);
-
 const { mutate: updateTask } = useEditTaskMutation();
+
+const formData: Partial<ITask> = reactive({
+  title: '',
+  body: '',
+});
+
+// -----------------------------------------------------------------------------
+// State
+// -----------------------------------------------------------------------------
+
+const isSideMenuOpened = ref(false);
+const isEditMode = ref(false);
+
+// -----------------------------------------------------------------------------
+// Computed
+// -----------------------------------------------------------------------------
+
+// TODO вынести в пинью isMobile и брать это состояние оттуда
+const isMobile = computed(
+  () => 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+);
+
+// -----------------------------------------------------------------------------
+// Methods
+// -----------------------------------------------------------------------------
+
+const onTaskCardHover = () => {
+  if (!isMobile.value && !isEditMode.value) {
+    isSideMenuOpened.value = true;
+  }
+};
+
+const onTaskCardLeave = () => {
+  if (!isMobile.value && !isEditMode.value) {
+    isSideMenuOpened.value = false;
+  }
+};
 
 const onTaskDone = (taskId: number) => {
   updateTask({
@@ -27,76 +65,113 @@ const onTaskDone = (taskId: number) => {
   });
 };
 
-// TODO вынести в пинью isMobile и брать это состояние оттуда
-const isMobile = computed(
-  () => 'ontouchstart' in window || navigator.maxTouchPoints > 0,
-);
+const onTaskSave = (taskId: number, updatedTask: Partial<ITask>) => {
+  updateTask({
+    id: taskId,
+    updatedTask,
+  });
+};
+
+const onProjectRemove = (taskId: number) => {
+  updateTask({
+    id: taskId,
+    updatedTask: { project_id: null },
+  });
+};
+
+// -----------------------------------------------------------------------------
+// watch
+// -----------------------------------------------------------------------------
+
+watch(isEditMode, () => {
+  if (isEditMode.value) {
+    formData.title = task.title;
+    formData.body = task.body;
+  }
+});
 </script>
 
 <template>
   <NLayout
     has-sider
-    @mouseenter="
-      () => {
-        if (!isMobile) isSideMenuOpened = true;
-      }
-    "
-    @mouseleave="
-      () => {
-        if (!isMobile) isSideMenuOpened = false;
-      }
-    "
+    @mouseenter="onTaskCardHover"
+    @mouseleave="onTaskCardLeave"
   >
     <SideMenuLayoutSider
       :is-mobile="isMobile"
       :is-side-menu-opened="isSideMenuOpened"
       :task="task"
+      v-model:is-edit-mode="isEditMode"
+      @save="() => onTaskSave(task.id, formData)"
     />
 
     <NCard
       hoverable
       @click="
         () => {
-          onTaskDone(task.id);
+          if (!isEditMode) {
+            onTaskDone(task.id);
+          }
         }
       "
     >
       <template #header>
-        <NFlex>
-          <PriorityTag :task="task" />
-          <NText :class="task.is_done && 'TaskCard--is-done TaskCard--opacity'">
-            {{ task.title }}
-          </NText>
+        <NFlex
+          justify="space-between"
+          align="center"
+          :wrap="false"
+        >
+          <NFlex
+            :wrap="false"
+            align="center"
+          >
+            <PriorityTag :task="task" />
+            <NText
+              :class="task.is_done && 'TaskCard--is-done TaskCard--opacity'"
+              v-if="!isEditMode"
+            >
+              {{ task.title }}
+            </NText>
+            <NInput
+              @click.stop
+              v-model:value="formData.title"
+              v-else
+            />
+          </NFlex>
+
+          <NTag
+            v-if="task.project_id"
+            :type="'warning'"
+            round
+            :bordered="false"
+            size="small"
+            closable
+            @close="
+              () => {
+                onProjectRemove(task.id);
+              }
+            "
+          >
+            {{ task.project.name }}
+          </NTag>
         </NFlex>
       </template>
 
-      <template #header-extra>
-        <TaskCardHeaderMenu
-          :is-menu-opened="isMenuOpened"
-          :task="task"
-        />
-      </template>
-
-      <NFlex justify="space-between">
-        <NTag
-          v-if="task.project_id"
-          :type="'warning'"
-          round
-          :bordered="false"
-          size="small"
-        >
-          {{ task.project.name }}
-        </NTag>
-      </NFlex>
-
-      <NDivider />
-
-      <NText :class="task.is_done && 'TaskCard--opacity'">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium
-        deleniti earum impedit incidunt itaque quasi rerum similique sit,
-        suscipit veniam. Architecto assumenda delectus earum, illum magnam
-        possimus unde? Praesentium, rem!)
+      <NText
+        :class="task.is_done && 'TaskCard--opacity'"
+        v-if="!isEditMode"
+        style="white-space: pre-line; word-break: break-word"
+      >
+        {{ task.body }}
       </NText>
+      <NInput
+        @click.stop
+        v-if="isEditMode"
+        v-model:value="formData.body"
+        type="textarea"
+        placeholder="Описание задачи..."
+        autosize
+      />
 
       <NDivider />
 

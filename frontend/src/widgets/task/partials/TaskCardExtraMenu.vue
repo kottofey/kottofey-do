@@ -22,6 +22,39 @@ const menuOptions = computed<DropdownOption[]>(() => [
     key: 'add_to_project',
     children: allProjectsOptions.value,
   },
+  {
+    label: 'Приоритет',
+    key: 'prioity',
+    children: [
+      {
+        label: 'Низкий',
+        key: 'low',
+        props: {
+          onClick: () => {
+            updateTask({ id: task.id, updatedTask: { priority: 'low' } });
+          },
+        },
+      },
+      {
+        label: 'Обычный',
+        key: 'normal',
+        props: {
+          onClick: () => {
+            updateTask({ id: task.id, updatedTask: { priority: 'normal' } });
+          },
+        },
+      },
+      {
+        label: 'Высокий',
+        key: 'high',
+        props: {
+          onClick: () => {
+            updateTask({ id: task.id, updatedTask: { priority: 'high' } });
+          },
+        },
+      },
+    ],
+  },
 ]);
 
 const onAddToProject = ({
@@ -60,20 +93,22 @@ watch([isMenuOpened], async () => {
 </script>
 
 <template>
-  <NDropdown
-    :options="menuOptions"
-    placement="right"
-    trigger="click"
-    @click.stop
-    v-model:show="isMenuOpened"
-  >
-    <NIcon
+  <NFlex>
+    <NDropdown
+      :options="menuOptions"
+      placement="right"
+      trigger="click"
       @click.stop
-      size="24"
+      v-model:show="isMenuOpened"
     >
-      <DotsVerticalIcon />
-    </NIcon>
-  </NDropdown>
+      <NIcon
+        @click.stop
+        size="24"
+      >
+        <DotsVerticalIcon />
+      </NIcon>
+    </NDropdown>
+  </NFlex>
 </template>
 
 <style scoped lang="scss"></style>

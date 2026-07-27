@@ -7,12 +7,15 @@ import {
   NPopconfirm,
   NText,
 } from 'naive-ui';
+import { ref } from 'vue';
 
 import {
   ArchiveIcon,
+  CancelIcon,
   EditIcon,
   JollyRodgerIcon,
   RestoreIcon,
+  SaveIcon,
   TrashIcon,
   UnarchiveIcon,
 } from '@/shared/ui/icons';
@@ -22,6 +25,7 @@ import {
   useEditTaskMutation,
   useRestoreTaskMutation,
 } from '@/entities/task';
+import { TaskCardExtraMenu } from '@/widgets/task/partials/index.ts';
 
 // -----------------------------------------------------------------------------
 // State
@@ -36,7 +40,13 @@ const { task, isMobile } = defineProps<{
   isMobile: boolean;
 }>();
 
+const emit = defineEmits<{
+  save: [void];
+}>();
+
 const isSideMenuOpened = defineModel<boolean>('isSideMenuOpened');
+const isEditMode = defineModel<boolean>('isEditMode');
+const isExtraMenuOpened = ref(false);
 
 const onArchiveTask = (taskId: number) => {
   updateTask({
@@ -63,6 +73,8 @@ const onArchiveTask = (taskId: number) => {
     <NFlex
       vertical
       align="center"
+      :size="10"
+      style="padding: 10px 0"
     >
       <NText
         depth="3"
@@ -74,13 +86,48 @@ const onArchiveTask = (taskId: number) => {
 
       <!--  Редактировать  -->
       <NButton
-        v-if="!task.deleted_at"
+        v-if="!task.deleted_at && !isEditMode"
         type="success"
+        @click="isEditMode = true"
       >
         <NIcon size="20">
           <EditIcon />
         </NIcon>
       </NButton>
+
+      <!--  Cохранить/отменить  -->
+
+      <NFlex
+        v-if="isEditMode"
+        vertical
+      >
+        <NButton
+          type="success"
+          @click="
+            () => {
+              isEditMode = false;
+              emit('save');
+            }
+          "
+        >
+          <NIcon size="20">
+            <SaveIcon />
+          </NIcon>
+        </NButton>
+        <NButton
+          v-if="isEditMode"
+          type="error"
+          @click="
+            () => {
+              isEditMode = false;
+            }
+          "
+        >
+          <NIcon size="20">
+            <CancelIcon />
+          </NIcon>
+        </NButton>
+      </NFlex>
 
       <!--  Архивировать / разархивировать  -->
       <NButton
@@ -97,7 +144,8 @@ const onArchiveTask = (taskId: number) => {
       <!--  Удалить  -->
       <NButton
         v-if="!task.deleted_at"
-        type="error"
+        color="black"
+        textColor="white"
         @click="deleteTask({ id: task.id })"
       >
         <NIcon size="20">
@@ -134,6 +182,11 @@ const onArchiveTask = (taskId: number) => {
         </template>
         <p>Удалить навсегда?</p>
       </NPopconfirm>
+
+      <TaskCardExtraMenu
+        :is-menu-opened="isExtraMenuOpened"
+        :task="task"
+      />
     </NFlex>
   </NLayoutSider>
 </template>
