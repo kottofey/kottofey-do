@@ -41,9 +41,10 @@ export async function getAllTasks({
   scopes?: ITaskScopes;
   includes?: ITaskIncludes;
   meta?: Partial<IMeta>;
-}): Promise<undefined | { meta: IMeta; data: ITask[] }> {
+}, signal?: AbortSignal): Promise<undefined | { meta: IMeta; data: ITask[] }> {
   return await api.get<{ meta: IMeta; data: ITask[] }>('/tasks', {
     query: serializeQuery({ scopes, includes, meta }),
+    signal,
   });
 }
 
@@ -51,8 +52,8 @@ export async function getTask({
   id,
 }: {
   id: number;
-}): Promise<ITask | undefined> {
-  return await api.get<ITask>(`/tasks/${id}`);
+}, signal?: AbortSignal): Promise<ITask | undefined> {
+  return await api.get<ITask>(`/tasks/${id}`, { signal });
 }
 
 export interface ICreateTaskDto {
@@ -73,8 +74,8 @@ export async function createTask({
   task,
 }: {
   task: ICreateTaskDto;
-}): Promise<ITask | undefined> {
-  return await api.post<ITask>('/tasks', { body: task });
+}, signal?: AbortSignal): Promise<ITask | undefined> {
+  return await api.post<ITask>('/tasks', { body: task, signal });
 }
 
 export async function deleteTask({
@@ -83,14 +84,15 @@ export async function deleteTask({
 }: {
   id: number;
   force?: boolean;
-}): Promise<void> {
+}, signal?: AbortSignal): Promise<void> {
   return await api.delete(`/tasks/${id}`, {
     params: force ? { force: 'true' } : undefined,
+    signal,
   });
 }
 
-export async function restoreTask({ id }: { id: number }): Promise<void> {
-  return await api.put(`/tasks/${id}/restore`);
+export async function restoreTask({ id }: { id: number }, signal?: AbortSignal): Promise<void> {
+  return await api.put(`/tasks/${id}/restore`, { signal });
 }
 
 export async function editTask({
@@ -99,6 +101,6 @@ export async function editTask({
 }: {
   id: number;
   updatedTask: IUpdateTaskDto;
-}): Promise<ITask | undefined> {
-  return await api.put<ITask>(`/tasks/${id}`, { body: updatedTask });
+}, signal?: AbortSignal): Promise<ITask | undefined> {
+  return await api.put<ITask>(`/tasks/${id}`, { body: updatedTask, signal });
 }

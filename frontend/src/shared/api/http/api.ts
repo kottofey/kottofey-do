@@ -8,6 +8,7 @@ type RequestOptions = {
   params?: Record<string, string | undefined>;
   query?: string;
   body?: unknown;
+  signal?: AbortSignal;
 };
 
 export class ApiClient {
@@ -35,6 +36,7 @@ export class ApiClient {
       credentials: 'include',
       body:
         options.body !== undefined ? JSON.stringify(options.body) : undefined,
+      signal: options.signal,
     });
 
     if (!response.ok) {

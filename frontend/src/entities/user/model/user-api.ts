@@ -31,9 +31,10 @@ export async function getAllUsers({
 }: {
   scopes?: IUserScopes;
   includes?: IUserIncludes;
-}): Promise<{ meta: IMeta; data: IUser[] } | undefined> {
+}, signal?: AbortSignal): Promise<{ meta: IMeta; data: IUser[] } | undefined> {
   return await api.get<{ meta: IMeta; data: IUser[] }>('/users', {
     query: serializeQuery({ scopes, includes }),
+    signal,
   });
 }
 
@@ -41,8 +42,8 @@ export async function getUser({
   id,
 }: {
   id: number;
-}): Promise<IUser | undefined> {
-  return await api.get<IUser>(`/users/${id}`);
+}, signal?: AbortSignal): Promise<IUser | undefined> {
+  return await api.get<IUser>(`/users/${id}`, { signal });
 }
 
 export interface ICreateUserDto {
@@ -61,16 +62,16 @@ export async function createUser({
   user,
 }: {
   user: ICreateUserDto;
-}): Promise<IUser | undefined> {
-  return await api.post<IUser>('/users', { body: user });
+}, signal?: AbortSignal): Promise<IUser | undefined> {
+  return await api.post<IUser>('/users', { body: user, signal });
 }
 
-export async function deleteUser({ id }: { id: number }): Promise<void> {
-  return await api.delete(`/users/${id}`);
+export async function deleteUser({ id }: { id: number }, signal?: AbortSignal): Promise<void> {
+  return await api.delete(`/users/${id}`, { signal });
 }
 
-export async function restoreUser({ id }: { id: number }): Promise<void> {
-  return await api.put(`/users/${id}/restore`);
+export async function restoreUser({ id }: { id: number }, signal?: AbortSignal): Promise<void> {
+  return await api.put(`/users/${id}/restore`, { signal });
 }
 
 export async function editUser({
@@ -79,12 +80,12 @@ export async function editUser({
 }: {
   id: number;
   updatedUser: IUpdateUserDto;
-}): Promise<IUser | undefined> {
-  return await api.put<IUser>(`/users/${id}`, { body: updatedUser });
+}, signal?: AbortSignal): Promise<IUser | undefined> {
+  return await api.put<IUser>(`/users/${id}`, { body: updatedUser, signal });
 }
 
-export async function getAllUserRoles(): Promise<IUser['roles']> {
-  const rolesData = await api.get<{ data: IUser['roles'] }>('/roles');
+export async function getAllUserRoles(signal?: AbortSignal): Promise<IUser['roles']> {
+  const rolesData = await api.get<{ data: IUser['roles'] }>('/roles', { signal });
 
   return rolesData?.data ?? [];
 }

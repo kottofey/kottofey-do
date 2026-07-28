@@ -37,7 +37,7 @@ export const useTasksQueryClient = async ({
 }) => {
   return await client.fetchQuery({
     queryKey: taskKeys.list(scopes, includes, toValue(meta)),
-    queryFn: () => getAllTasks({ scopes, includes, meta: toValue(meta) }),
+    queryFn: ({ signal }) => getAllTasks({ scopes, includes, meta: toValue(meta) }, signal),
   });
 };
 
@@ -56,8 +56,8 @@ export const useTasksQuery = ({
     queryKey: computed(() =>
       taskKeys.list(toValue(scopes), includes, toValue(meta)),
     ),
-    queryFn: () =>
-      getAllTasks({ scopes: toValue(scopes), includes, meta: toValue(meta) }),
+    queryFn: ({ signal }) =>
+      getAllTasks({ scopes: toValue(scopes), includes, meta: toValue(meta) }, signal),
     enabled: computed(() => toValue(isEnabled)),
   });
 };
@@ -65,7 +65,7 @@ export const useTasksQuery = ({
 export const useTaskQuery = ({ id }: { id: number }) => {
   return useQuery({
     queryKey: taskKeys.detail(id),
-    queryFn: () => getTask({ id }),
+    queryFn: ({ signal }) => getTask({ id }, signal),
   });
 };
 

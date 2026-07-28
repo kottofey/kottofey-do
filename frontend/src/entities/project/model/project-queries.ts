@@ -37,7 +37,7 @@ export const useProjectsQueryClient = async ({
   // Для разовых запросов
   return await client.fetchQuery({
     queryKey: projectKeys.list(scopes, includes, meta),
-    queryFn: () => getAllProjects({ includes, scopes, meta }),
+    queryFn: ({ signal }) => getAllProjects({ includes, scopes, meta }, signal),
   });
 };
 
@@ -56,12 +56,12 @@ export const useProjectsQuery = ({
     queryKey: computed(() =>
       projectKeys.list(toValue(scopes), includes, toValue(meta)),
     ),
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       getAllProjects({
         scopes: toValue(scopes),
         includes,
         meta: toValue(meta),
-      }),
+      }, signal),
     enabled: computed(() => toValue(isEnabled)),
   });
 };
@@ -69,7 +69,7 @@ export const useProjectsQuery = ({
 export const useProjectQuery = ({ id }: { id: number }) => {
   return useQuery({
     queryKey: projectKeys.detail(id),
-    queryFn: () => getProject({ id }),
+    queryFn: ({ signal }) => getProject({ id }, signal),
   });
 };
 

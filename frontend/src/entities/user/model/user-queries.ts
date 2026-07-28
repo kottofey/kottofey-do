@@ -34,7 +34,7 @@ export const useUsersQueryClient = async ({
 }) => {
   return await client.fetchQuery({
     queryKey: userKeys.list(scopes, includes),
-    queryFn: () => getAllUsers({ scopes, includes }),
+    queryFn: ({ signal }) => getAllUsers({ scopes, includes }, signal),
   });
 };
 
@@ -49,7 +49,7 @@ export const useUsersQuery = ({
 }) => {
   return useQuery({
     queryKey: computed(() => userKeys.list(toValue(scopes), includes)),
-    queryFn: () => getAllUsers({ scopes: toValue(scopes), includes }),
+    queryFn: ({ signal }) => getAllUsers({ scopes: toValue(scopes), includes }, signal),
     enabled: computed(() => toValue(isEnabled)),
   });
 };
@@ -57,7 +57,7 @@ export const useUsersQuery = ({
 export const useUserQuery = ({ id }: { id: number }) => {
   return useQuery({
     queryKey: userKeys.detail(id),
-    queryFn: () => getUser({ id }),
+    queryFn: ({ signal }) => getUser({ id }, signal),
   });
 };
 
@@ -135,7 +135,7 @@ export const useUserRolesQuery = ({
   isEnabled?: MaybeRefOrGetter<boolean>;
 }) => {
   return useQuery({
-    queryFn: () => getAllUserRoles(),
+    queryFn: ({ signal }) => getAllUserRoles(signal),
     queryKey: ['roles'],
     enabled: computed(() => toValue(isEnabled)),
   });

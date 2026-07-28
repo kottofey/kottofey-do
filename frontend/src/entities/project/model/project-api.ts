@@ -31,9 +31,10 @@ export async function getAllProjects({
   scopes?: IProjectScopes;
   includes?: IProjectIncludes;
   meta?: Partial<IMeta>;
-}): Promise<undefined | { meta: IMeta; data: IProject[] }> {
+}, signal?: AbortSignal): Promise<undefined | { meta: IMeta; data: IProject[] }> {
   return await api.get<{ meta: IMeta; data: IProject[] }>('/projects', {
     query: serializeQuery({ scopes, includes, meta }),
+    signal,
   });
 }
 
@@ -84,6 +85,6 @@ export async function editProject({
 }: {
   id: number;
   updatedProject: IUpdateProjectDto;
-}): Promise<IProject | undefined> {
-  return await api.put<IProject>(`/projects/${id}`, { body: updatedProject });
+}, signal?: AbortSignal): Promise<IProject | undefined> {
+  return await api.put<IProject>(`/projects/${id}`, { body: updatedProject, signal });
 }
