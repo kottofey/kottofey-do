@@ -14,4 +14,6 @@ export type {
   IProject,
   IProjectIncludes,
   IProjectScopes,
+  ICreateProjectDto,
+  IUpdateProjectDto,
 } from './model/project-api';

@@ -1,8 +1,6 @@
-import { useApi, httpMethod, serializeQuery } from '@/shared/api';
+import { api, serializeQuery } from '@/shared/api';
 import type { IMeta } from '@/shared/types';
 
-// TODO дописать скоупы если будут
-// TODO написать алгоритм сериализации с проверкой через zod
 export interface IUser {
   id: number;
 
@@ -34,9 +32,7 @@ export async function getAllUsers({
   scopes?: IUserScopes;
   includes?: IUserIncludes;
 }): Promise<{ meta: IMeta; data: IUser[] } | undefined> {
-  return await useApi<{ meta: IMeta; data: IUser[] }>({
-    route: 'users',
-    method: httpMethod.GET,
+  return await api.get<{ meta: IMeta; data: IUser[] }>('/users', {
     query: serializeQuery({ scopes, includes }),
   });
 }
@@ -46,36 +42,35 @@ export async function getUser({
 }: {
   id: number;
 }): Promise<IUser | undefined> {
-  return await useApi<IUser>({
-    route: `users/${id}`,
-    method: httpMethod.GET,
-  });
+  return await api.get<IUser>(`/users/${id}`);
+}
+
+export interface ICreateUserDto {
+  email: string;
+  password: string;
+  roles: { name: string; description?: string }[];
+}
+
+export interface IUpdateUserDto {
+  email?: string;
+  password?: string;
+  roles?: { name: string; description?: string }[];
 }
 
 export async function createUser({
   user,
 }: {
-  user: Partial<IUser>;
+  user: ICreateUserDto;
 }): Promise<IUser | undefined> {
-  return await useApi<IUser>({
-    route: `users`,
-    method: httpMethod.POST,
-    body: JSON.stringify(user),
-  });
+  return await api.post<IUser>('/users', { body: user });
 }
 
 export async function deleteUser({ id }: { id: number }): Promise<void> {
-  return await useApi({
-    route: `users/${id}`,
-    method: httpMethod.DELETE,
-  });
+  return await api.delete(`/users/${id}`);
 }
 
 export async function restoreUser({ id }: { id: number }): Promise<void> {
-  return await useApi({
-    route: `users/${id}/restore`,
-    method: httpMethod.PUT,
-  });
+  return await api.put(`/users/${id}/restore`);
 }
 
 export async function editUser({
@@ -83,20 +78,13 @@ export async function editUser({
   updatedUser,
 }: {
   id: number;
-  updatedUser: Partial<IUser>;
+  updatedUser: IUpdateUserDto;
 }): Promise<IUser | undefined> {
-  return await useApi<IUser>({
-    route: `users/${id}`,
-    method: httpMethod.PUT,
-    body: JSON.stringify(updatedUser),
-  });
+  return await api.put<IUser>(`/users/${id}`, { body: updatedUser });
 }
 
 export async function getAllUserRoles(): Promise<IUser['roles']> {
-  const rolesData = await useApi<{ data: IUser['roles'] }>({
-    route: 'roles',
-    method: httpMethod.GET,
-  });
+  const rolesData = await api.get<{ data: IUser['roles'] }>('/roles');
 
   return rolesData?.data ?? [];
 }

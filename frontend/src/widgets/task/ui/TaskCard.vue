@@ -2,12 +2,7 @@
 import { NCard, NDivider, NFlex, NInput, NLayout, NTag, NText } from 'naive-ui';
 import { computed, reactive, ref, watch } from 'vue';
 
-import {
-  SideMenuLayoutSider,
-  TaskCardFooter,
-  TaskCardExtraMenu,
-  PriorityTag,
-} from '../partials';
+import { SideMenuLayoutSider, TaskCardFooter, PriorityTag } from '../partials';
 
 import { type ITask, useEditTaskMutation } from '@/entities/task';
 

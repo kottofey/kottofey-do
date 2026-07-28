@@ -1,23 +1,19 @@
-export interface IError {
-  status: number;
-  description?: string;
-}
-
-export class CustomError extends Error {
+export class ApiError extends Error {
   public status: number;
-  public parentError: unknown;
+  public details?: Record<string, unknown>;
 
   constructor({
     message,
     status,
-    parentError,
+    details,
   }: {
     message: string;
     status: number;
-    parentError?: unknown;
+    details?: Record<string, unknown>;
   }) {
     super(message);
+    this.name = 'ApiError';
     this.status = status;
-    this.parentError = parentError;
+    this.details = details;
   }
 }

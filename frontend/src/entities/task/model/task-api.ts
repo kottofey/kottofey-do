@@ -1,10 +1,8 @@
-import { useApi, httpMethod, serializeQuery } from '@/shared/api';
+import { api, serializeQuery } from '@/shared/api';
 import type { IUser } from '@/entities/user';
 import type { IMeta } from '@/shared/types';
 import type { IProject } from '@/entities/project';
 
-// TODO дописать скоупы если будут
-// TODO написать алгоритм сериализации с проверкой через zod
 export interface ITask {
   id: number;
   project_id: number | null;
@@ -44,9 +42,7 @@ export async function getAllTasks({
   includes?: ITaskIncludes;
   meta?: Partial<IMeta>;
 }): Promise<undefined | { meta: IMeta; data: ITask[] }> {
-  return await useApi<{ meta: IMeta; data: ITask[] }>({
-    route: 'tasks',
-    method: httpMethod.GET,
+  return await api.get<{ meta: IMeta; data: ITask[] }>('/tasks', {
     query: serializeQuery({ scopes, includes, meta }),
   });
 }
@@ -56,22 +52,29 @@ export async function getTask({
 }: {
   id: number;
 }): Promise<ITask | undefined> {
-  return await useApi<ITask>({
-    route: `tasks/${id}`,
-    method: httpMethod.GET,
-  });
+  return await api.get<ITask>(`/tasks/${id}`);
+}
+
+export interface ICreateTaskDto {
+  title: string;
+  project_id?: number | null;
+}
+
+export interface IUpdateTaskDto {
+  title?: string;
+  body?: string;
+  is_done?: boolean;
+  is_archived?: boolean;
+  priority?: 'high' | 'normal' | 'low';
+  project_id?: number | null;
 }
 
 export async function createTask({
   task,
 }: {
-  task: Partial<ITask>;
+  task: ICreateTaskDto;
 }): Promise<ITask | undefined> {
-  return await useApi<ITask>({
-    route: `tasks`,
-    method: httpMethod.POST,
-    body: JSON.stringify(task),
-  });
+  return await api.post<ITask>('/tasks', { body: task });
 }
 
 export async function deleteTask({
@@ -81,17 +84,13 @@ export async function deleteTask({
   id: number;
   force?: boolean;
 }): Promise<void> {
-  return await useApi({
-    route: `tasks/${id}${force ? '?force=true' : ''}`,
-    method: httpMethod.DELETE,
+  return await api.delete(`/tasks/${id}`, {
+    params: force ? { force: 'true' } : undefined,
   });
 }
 
 export async function restoreTask({ id }: { id: number }): Promise<void> {
-  return await useApi({
-    route: `tasks/${id}/restore`,
-    method: httpMethod.PUT,
-  });
+  return await api.put(`/tasks/${id}/restore`);
 }
 
 export async function editTask({
@@ -99,11 +98,7 @@ export async function editTask({
   updatedTask,
 }: {
   id: number;
-  updatedTask: Partial<ITask>;
+  updatedTask: IUpdateTaskDto;
 }): Promise<ITask | undefined> {
-  return await useApi<ITask>({
-    route: `tasks/${id}`,
-    method: httpMethod.PUT,
-    body: JSON.stringify(updatedTask),
-  });
+  return await api.put<ITask>(`/tasks/${id}`, { body: updatedTask });
 }

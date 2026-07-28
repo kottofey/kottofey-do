@@ -13,14 +13,14 @@ import {
   createProject,
   deleteProject,
   getProject,
-  type IProject,
   type IProjectScopes,
   type IProjectIncludes,
+  type ICreateProjectDto,
+  type IUpdateProjectDto,
 } from './project-api';
 import { projectKeys } from './project-keys.ts';
 
-import { notification } from '@/shared/lib';
-import { getErrorMessage } from '@/shared/lib/tanstack';
+import { createMutationOptions } from '@/shared/lib/tanstack';
 import type { IMeta } from '@/shared/types';
 
 export const useProjectsQueryClient = async ({
@@ -78,18 +78,12 @@ export const useCreateProjectMutation = () => {
 
   return useMutation({
     mutationKey: projectKeys.lists(),
-    mutationFn: ({ project }: { project: Partial<IProject> }) =>
+    mutationFn: ({ project }: { project: ICreateProjectDto }) =>
       createProject({ project }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
-    },
-    onError: (error: Error) => {
-      notification.error({
-        content: getErrorMessage({ error }),
-        closable: true,
-        duration: 5000,
-      });
-    },
+    ...createMutationOptions({
+      queryClient,
+      invalidateKeys: () => [projectKeys.lists()],
+    }),
   });
 };
 
@@ -102,26 +96,15 @@ export const useEditProjectMutation = () => {
       updatedProject,
     }: {
       id: number;
-      updatedProject: Partial<IProject>;
+      updatedProject: IUpdateProjectDto;
     }) => editProject({ id, updatedProject }),
-    onSuccess: async (_data, variables) => {
-      await queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
-      await queryClient.invalidateQueries({
-        queryKey: projectKeys.detail(variables.id),
-      });
-      // notification.success({
-      //   content: 'Отредактировано',
-      //   closable: true,
-      //   duration: 5000,
-      // });
-    },
-    onError: (error: Error) => {
-      notification.error({
-        content: getErrorMessage({ error }),
-        closable: true,
-        duration: 5000,
-      });
-    },
+    ...createMutationOptions({
+      queryClient,
+      invalidateKeys: (variables) => [
+        projectKeys.lists(),
+        projectKeys.detail(variables.id),
+      ],
+    }),
   });
 };
 
@@ -131,24 +114,13 @@ export const useDeleteProjectMutation = () => {
   return useMutation({
     mutationFn: ({ id, force = false }: { id: number; force?: boolean }) =>
       deleteProject({ id, force }),
-    onSuccess: async (_data, variables) => {
-      await queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
-      await queryClient.invalidateQueries({
-        queryKey: projectKeys.detail(variables.id),
-      });
-      // notification.success({
-      //   content: 'Удалено',
-      //   closable: true,
-      //   duration: 5000,
-      // });
-    },
-    onError: (error: Error) => {
-      notification.error({
-        content: getErrorMessage({ error }),
-        closable: true,
-        duration: 5000,
-      });
-    },
+    ...createMutationOptions({
+      queryClient,
+      invalidateKeys: (variables) => [
+        projectKeys.lists(),
+        projectKeys.detail(variables.id),
+      ],
+    }),
   });
 };
 
@@ -157,23 +129,12 @@ export const useRestoreProjectMutation = () => {
 
   return useMutation({
     mutationFn: ({ id }: { id: number }) => restoreProject({ id }),
-    onSuccess: async (_data, variables) => {
-      await queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
-      await queryClient.invalidateQueries({
-        queryKey: projectKeys.detail(variables.id),
-      });
-      // notification.success({
-      //   content: 'Восстановлено',
-      //   closable: true,
-      //   duration: 5000,
-      // });
-    },
-    onError: (error: Error) => {
-      notification.error({
-        content: getErrorMessage({ error }),
-        closable: true,
-        duration: 5000,
-      });
-    },
+    ...createMutationOptions({
+      queryClient,
+      invalidateKeys: (variables) => [
+        projectKeys.lists(),
+        projectKeys.detail(variables.id),
+      ],
+    }),
   });
 };

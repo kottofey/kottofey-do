@@ -13,32 +13,16 @@ import {
   createTask,
   deleteTask,
   getTask,
-  type ITask,
   type ITaskScopes,
   type ITaskIncludes,
+  type ICreateTaskDto,
+  type IUpdateTaskDto,
 } from './task-api';
 import { taskKeys } from './task-keys.ts';
 
+import { createMutationOptions } from '@/shared/lib/tanstack';
 import { projectKeys } from '@/entities/project/model/project-keys';
-import { notification } from '@/shared/lib';
-import { getErrorMessage } from '@/shared/lib/tanstack';
 import type { IMeta } from '@/shared/types';
-
-export const useTaskQueryClient = async ({
-  client,
-  scopes,
-  includes,
-}: {
-  client: QueryClient;
-  scopes?: ITaskScopes;
-  includes?: ITaskIncludes;
-}) => {
-  // Для разовых запросов
-  return await client.fetchQuery({
-    queryKey: taskKeys.list(scopes, includes),
-    queryFn: () => getAllTasks({ scopes, includes }),
-  });
-};
 
 export const useTasksQueryClient = async ({
   scopes,
@@ -90,18 +74,11 @@ export const useCreateTaskMutation = () => {
 
   return useMutation({
     mutationKey: taskKeys.lists(),
-    mutationFn: ({ task }: { task: Partial<ITask> }) => createTask({ task }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
-      await queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
-    },
-    onError: (error: Error) => {
-      notification.error({
-        content: getErrorMessage({ error }),
-        closable: true,
-        duration: 5000,
-      });
-    },
+    mutationFn: ({ task }: { task: ICreateTaskDto }) => createTask({ task }),
+    ...createMutationOptions({
+      queryClient,
+      invalidateKeys: () => [taskKeys.lists(), projectKeys.lists()],
+    }),
   });
 };
 
@@ -114,22 +91,16 @@ export const useEditTaskMutation = () => {
       updatedTask,
     }: {
       id: number;
-      updatedTask: Partial<ITask>;
+      updatedTask: IUpdateTaskDto;
     }) => editTask({ id, updatedTask }),
-    onSuccess: async (_data, variables) => {
-      await queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
-      await queryClient.invalidateQueries({
-        queryKey: taskKeys.detail(variables.id),
-      });
-      await queryClient.invalidateQueries({ queryKey: projectKeys.all });
-    },
-    onError: (error: Error) => {
-      notification.error({
-        content: getErrorMessage({ error }),
-        closable: true,
-        duration: 5000,
-      });
-    },
+    ...createMutationOptions({
+      queryClient,
+      invalidateKeys: (variables) => [
+        taskKeys.lists(),
+        taskKeys.detail(variables.id),
+        projectKeys.all,
+      ],
+    }),
   });
 };
 
@@ -139,19 +110,13 @@ export const useDeleteTaskMutation = () => {
   return useMutation({
     mutationFn: ({ id, force = false }: { id: number; force?: boolean }) =>
       deleteTask({ id, force }),
-    onSuccess: async (_data, variables) => {
-      await queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
-      await queryClient.invalidateQueries({
-        queryKey: taskKeys.detail(variables.id),
-      });
-    },
-    onError: (error: Error) => {
-      notification.error({
-        content: getErrorMessage({ error }),
-        closable: true,
-        duration: 5000,
-      });
-    },
+    ...createMutationOptions({
+      queryClient,
+      invalidateKeys: (variables) => [
+        taskKeys.lists(),
+        taskKeys.detail(variables.id),
+      ],
+    }),
   });
 };
 
@@ -160,18 +125,12 @@ export const useRestoreTaskMutation = () => {
 
   return useMutation({
     mutationFn: ({ id }: { id: number }) => restoreTask({ id }),
-    onSuccess: async (_data, variables) => {
-      await queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
-      await queryClient.invalidateQueries({
-        queryKey: taskKeys.detail(variables.id),
-      });
-    },
-    onError: (error: Error) => {
-      notification.error({
-        content: getErrorMessage({ error }),
-        closable: true,
-        duration: 5000,
-      });
-    },
+    ...createMutationOptions({
+      queryClient,
+      invalidateKeys: (variables) => [
+        taskKeys.lists(),
+        taskKeys.detail(variables.id),
+      ],
+    }),
   });
 };

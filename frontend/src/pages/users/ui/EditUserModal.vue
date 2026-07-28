@@ -14,7 +14,11 @@ import { computed, ref, toRef, watch } from 'vue';
 
 import { initFormData, createFormRules } from '../config';
 
-import { type IUser, useUserRolesQuery } from '@/entities/user';
+import {
+  type ICreateUserDto,
+  type IUpdateUserDto,
+  useUserRolesQuery,
+} from '@/entities/user';
 import { useAuthStore } from '@/shared/stores';
 
 // -----------------------------------------------------------------------------
@@ -23,20 +27,20 @@ import { useAuthStore } from '@/shared/stores';
 
 const isVisible = defineModel<boolean>('isVisible');
 const { user } = defineProps<{
-  user?: Partial<IUser>;
+  user?: ICreateUserDto & { id?: number };
 }>();
 
 const emit = defineEmits<{
-  save: [Partial<IUser>];
+  save: [ICreateUserDto & IUpdateUserDto & { id?: number }];
 }>();
 
 const formRef = ref<FormInst | null>();
 
-const formData = ref<
-  Partial<IUser> & { repeatPassword?: string; password?: string }
->({
-  ...initFormData,
-});
+const formData = ref<ICreateUserDto & { repeatPassword?: string; id?: number }>(
+  {
+    ...initFormData,
+  },
+);
 
 // -----------------------------------------------------------------------------
 // Computed

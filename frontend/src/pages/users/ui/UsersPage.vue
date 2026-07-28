@@ -6,9 +6,11 @@ import { createColumns } from '../config';
 
 import EditUserModal from './EditUserModal.vue';
 
-import { AddButton, TheLayout } from '@/shared/ui';
+import { AddIcon } from '@/shared/ui/icons';
+import { AppButton, TheLayout } from '@/shared/ui';
 import {
-  type IUser,
+  type ICreateUserDto,
+  type IUpdateUserDto,
   type IUserScopes,
   useCreateUserMutation,
   useEditUserMutation,
@@ -21,7 +23,9 @@ import {
 
 const deletedOnly = ref(false);
 const isModalVisible = ref(false);
-const userToEdit = ref<Partial<IUser> | undefined>(undefined);
+const userToEdit = ref<(ICreateUserDto & { id?: number }) | undefined>(
+  undefined,
+);
 
 // -----------------------------------------------------------------------------
 // Computed
@@ -51,14 +55,17 @@ const onUserRestore = (id: number) => {
   console.log('restore', id);
 };
 
-const onOpenModal = (user: Partial<IUser> | undefined) => {
+const onOpenModal = (user: (ICreateUserDto & { id?: number }) | undefined) => {
   userToEdit.value = user ? user : undefined;
   isModalVisible.value = true;
 };
 
-const onSaveUser = (user: Partial<IUser>) => {
+const onSaveUser = (
+  user: ICreateUserDto & IUpdateUserDto & { id?: number },
+) => {
   if (user.id) {
-    editUser({ id: user.id, updatedUser: user });
+    const { id, ...updatedUser } = user;
+    editUser({ id, updatedUser });
   } else {
     createUser({ user });
   }
@@ -71,7 +78,12 @@ const onSaveUser = (user: Partial<IUser>) => {
 <template>
   <TheLayout>
     <template #buttons-extra>
-      <AddButton @click="onOpenModal">Новый юзер</AddButton>
+      <AppButton @click="onOpenModal">
+        <template #icon>
+          <AddIcon />
+        </template>
+        Новый юзер
+      </AppButton>
       <NCheckbox
         v-model:checked="deletedOnly"
         label="Удаленные"

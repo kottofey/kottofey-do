@@ -2,7 +2,8 @@
 // import { useLocalStorage } from '@vueuse/core';
 import { NAvatar, NIcon } from 'naive-ui';
 
-import { ChangeThemeButton, LogoutButton } from '@/shared/ui';
+import { ChangeThemeButton, LogoutButton } from '../';
+
 import {
   EyeIcon as ViewerIcon,
   PersonIcon as UserIcon,

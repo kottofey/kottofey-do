@@ -7,4 +7,10 @@ export {
   useRestoreTaskMutation,
 } from './model/task-queries';
 
-export type { ITask, ITaskIncludes, ITaskScopes } from './model/task-api';
+export type {
+  ITask,
+  ITaskIncludes,
+  ITaskScopes,
+  ICreateTaskDto,
+  IUpdateTaskDto,
+} from './model/task-api';

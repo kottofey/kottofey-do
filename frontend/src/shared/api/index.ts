@@ -1,3 +1,7 @@
-export { default as useApi } from './http/useApi';
+export { ApiClient } from './http/api';
 export { default as serializeQuery } from './http/serializeQuery';
-export * as httpMethod from './http/methods';
+export { ApiError } from './http/error';
+
+import { ApiClient } from './http/api';
+
+export const api = new ApiClient();

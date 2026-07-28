@@ -1,10 +1,8 @@
-import { useApi, httpMethod, serializeQuery } from '@/shared/api';
+import { api, serializeQuery } from '@/shared/api';
 import type { IUser } from '@/entities/user';
 import type { ITask } from '@/entities/task';
 import type { IMeta } from '@/shared/types';
 
-// TODO дописать скоупы если будут
-// TODO написать алгоритм сериализации с проверкой через zod
 export interface IProject {
   id: number;
   name: string;
@@ -34,9 +32,7 @@ export async function getAllProjects({
   includes?: IProjectIncludes;
   meta?: Partial<IMeta>;
 }): Promise<undefined | { meta: IMeta; data: IProject[] }> {
-  return await useApi<{ meta: IMeta; data: IProject[] }>({
-    route: `projects`,
-    method: httpMethod.GET,
+  return await api.get<{ meta: IMeta; data: IProject[] }>('/projects', {
     query: serializeQuery({ scopes, includes, meta }),
   });
 }
@@ -46,22 +42,24 @@ export async function getProject({
 }: {
   id: number;
 }): Promise<IProject | undefined> {
-  return await useApi<IProject>({
-    route: `projects/${id}`,
-    method: httpMethod.GET,
-  });
+  return await api.get<IProject>(`/projects/${id}`);
+}
+
+export interface ICreateProjectDto {
+  name: string;
+}
+
+export interface IUpdateProjectDto {
+  name?: string;
+  is_archived?: boolean;
 }
 
 export async function createProject({
   project,
 }: {
-  project: Partial<IProject>;
+  project: ICreateProjectDto;
 }): Promise<IProject | undefined> {
-  return await useApi<IProject>({
-    route: `projects`,
-    method: httpMethod.POST,
-    body: JSON.stringify(project),
-  });
+  return await api.post<IProject>('/projects', { body: project });
 }
 
 export async function deleteProject({
@@ -71,17 +69,13 @@ export async function deleteProject({
   id: number;
   force?: boolean;
 }): Promise<void> {
-  return await useApi({
-    route: `projects/${id}${force ? '?force=true' : ''}`,
-    method: httpMethod.DELETE,
+  return await api.delete(`/projects/${id}`, {
+    params: force ? { force: 'true' } : undefined,
   });
 }
 
 export async function restoreProject({ id }: { id: number }): Promise<void> {
-  return await useApi({
-    route: `projects/${id}/restore`,
-    method: httpMethod.PUT,
-  });
+  return await api.put(`/projects/${id}/restore`);
 }
 
 export async function editProject({
@@ -89,11 +83,7 @@ export async function editProject({
   updatedProject,
 }: {
   id: number;
-  updatedProject: Partial<IProject>;
+  updatedProject: IUpdateProjectDto;
 }): Promise<IProject | undefined> {
-  return await useApi<IProject>({
-    route: `projects/${id}`,
-    method: httpMethod.PUT,
-    body: JSON.stringify(updatedProject),
-  });
+  return await api.put<IProject>(`/projects/${id}`, { body: updatedProject });
 }

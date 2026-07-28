@@ -13,31 +13,15 @@ import {
   createUser,
   deleteUser,
   getUser,
-  type IUser,
   type IUserScopes,
   type IUserIncludes,
+  type ICreateUserDto,
+  type IUpdateUserDto,
   getAllUserRoles,
 } from './user-api';
 import { userKeys } from './user-keys';
 
-import { notification } from '@/shared/lib';
-import { getErrorMessage } from '@/shared/lib/tanstack';
-
-export const useUserQueryClient = async ({
-  client,
-  scopes,
-  includes,
-}: {
-  client: QueryClient;
-  scopes?: IUserScopes;
-  includes?: IUserIncludes;
-}) => {
-  // Для разовых запросов
-  return await client.fetchQuery({
-    queryKey: userKeys.list(scopes, includes),
-    queryFn: () => getAllUsers({ scopes, includes }),
-  });
-};
+import { createMutationOptions } from '@/shared/lib/tanstack';
 
 export const useUsersQueryClient = async ({
   scopes,
@@ -82,22 +66,12 @@ export const useCreateUserMutation = () => {
 
   return useMutation({
     mutationKey: userKeys.lists(),
-    mutationFn: ({ user }: { user: Partial<IUser> }) => createUser({ user }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: userKeys.lists() });
-      notification.success({
-        content: 'Создано',
-        closable: true,
-        duration: 5000,
-      });
-    },
-    onError: (error: Error) => {
-      notification.error({
-        content: getErrorMessage({ error }),
-        closable: true,
-        duration: 5000,
-      });
-    },
+    mutationFn: ({ user }: { user: ICreateUserDto }) => createUser({ user }),
+    ...createMutationOptions({
+      queryClient,
+      invalidateKeys: () => [userKeys.lists()],
+      successMessage: 'Создано',
+    }),
   });
 };
 
@@ -110,26 +84,16 @@ export const useEditUserMutation = () => {
       updatedUser,
     }: {
       id: number;
-      updatedUser: Partial<IUser>;
+      updatedUser: IUpdateUserDto;
     }) => editUser({ id, updatedUser }),
-    onSuccess: async (_data, variables) => {
-      await queryClient.invalidateQueries({ queryKey: userKeys.lists() });
-      await queryClient.invalidateQueries({
-        queryKey: userKeys.detail(variables.id),
-      });
-      notification.success({
-        content: 'Отредактировано',
-        closable: true,
-        duration: 5000,
-      });
-    },
-    onError: (error: Error) => {
-      notification.error({
-        content: getErrorMessage({ error }),
-        closable: true,
-        duration: 5000,
-      });
-    },
+    ...createMutationOptions({
+      queryClient,
+      invalidateKeys: (variables) => [
+        userKeys.lists(),
+        userKeys.detail(variables.id),
+      ],
+      successMessage: 'Отредактировано',
+    }),
   });
 };
 
@@ -138,24 +102,14 @@ export const useDeleteUserMutation = () => {
 
   return useMutation({
     mutationFn: ({ id }: { id: number }) => deleteUser({ id }),
-    onSuccess: async (_data, variables) => {
-      await queryClient.invalidateQueries({ queryKey: userKeys.lists() });
-      await queryClient.invalidateQueries({
-        queryKey: userKeys.detail(variables.id),
-      });
-      notification.success({
-        content: 'Удалено',
-        closable: true,
-        duration: 5000,
-      });
-    },
-    onError: (error: Error) => {
-      notification.error({
-        content: getErrorMessage({ error }),
-        closable: true,
-        duration: 5000,
-      });
-    },
+    ...createMutationOptions({
+      queryClient,
+      invalidateKeys: (variables) => [
+        userKeys.lists(),
+        userKeys.detail(variables.id),
+      ],
+      successMessage: 'Удалено',
+    }),
   });
 };
 
@@ -164,24 +118,14 @@ export const useRestoreUserMutation = () => {
 
   return useMutation({
     mutationFn: ({ id }: { id: number }) => restoreUser({ id }),
-    onSuccess: async (_data, variables) => {
-      await queryClient.invalidateQueries({ queryKey: userKeys.lists() });
-      await queryClient.invalidateQueries({
-        queryKey: userKeys.detail(variables.id),
-      });
-      notification.success({
-        content: 'Восстановлено',
-        closable: true,
-        duration: 5000,
-      });
-    },
-    onError: (error: Error) => {
-      notification.error({
-        content: getErrorMessage({ error }),
-        closable: true,
-        duration: 5000,
-      });
-    },
+    ...createMutationOptions({
+      queryClient,
+      invalidateKeys: (variables) => [
+        userKeys.lists(),
+        userKeys.detail(variables.id),
+      ],
+      successMessage: 'Восстановлено',
+    }),
   });
 };
 

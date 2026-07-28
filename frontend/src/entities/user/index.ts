@@ -8,4 +8,10 @@ export {
   useUserRolesQuery,
 } from './model/user-queries';
 
-export type { IUser, IUserIncludes, IUserScopes } from './model/user-api';
+export type {
+  IUser,
+  IUserIncludes,
+  IUserScopes,
+  ICreateUserDto,
+  IUpdateUserDto,
+} from './model/user-api';

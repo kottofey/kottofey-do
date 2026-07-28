@@ -8,7 +8,6 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
   linkActiveClass: 'link--active',
-  linkExactActiveClass: 'link--active',
 });
 
 router.beforeEach((to) => {
